@@ -36,6 +36,7 @@
   --orange:#ff9f0a;
   --blue:#0a84ff;
   --safe-b:env(safe-area-inset-bottom,34px);
+  --safe-t:env(safe-area-inset-top,44px);
   --rad:14px;
   --rad-s:9px;
 }
@@ -59,7 +60,7 @@ html,body{
 .nav{
   background:rgba(5,5,5,0.97);
   backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-  padding:0 18px 13px;
+  padding:env(safe-area-inset-top,44px) 18px 13px;
   display:flex;align-items:flex-end;justify-content:space-between;
   position:sticky;top:0;z-index:100;
   border-bottom:1px solid var(--line);
@@ -272,7 +273,7 @@ html,body{
 #scanFlash{display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.87);pointer-events:none;}
 
 /* ── Login ── */
-.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);padding:24px;background-image:radial-gradient(ellipse at 50% 0%,rgba(229,35,28,.09) 0%,transparent 55%);}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);padding:calc(env(safe-area-inset-top,44px) + 24px) 24px calc(env(safe-area-inset-bottom,34px) + 24px);background-image:radial-gradient(ellipse at 50% 0%,rgba(229,35,28,.09) 0%,transparent 55%);}
 .login-card{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;width:100%;max-width:340px;}
 .login-head{padding:28px 24px 22px;text-align:center;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,var(--Rdim),transparent);}
 .login-logo{font-size:38px;font-weight:900;color:var(--W);letter-spacing:-2px;}
@@ -1685,16 +1686,18 @@ function buildAssetCard(assetKey, g) {
     : '';
 
   return '<div class="wo-card">'
-    + '<div class="wo-hdr">'
-    + '<div style="flex:1;">'
+    + '<div class="wo-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">'
+    + '<div style="flex:1;min-width:0;">'
     + '<div class="wo-num">Asset Log</div>'
     + '<div class="wo-asset">' + esc(g.asset) + '</div>'
-    + '<div class="wo-meta">' + esc(dts) + (g.tech?' \u00b7 \ud83d\udc77 '+esc(g.tech)+(g.empId?' ['+esc(g.empId)+']':''):'') + '</div>'
-    + '</div>' + archBtn + '</div>'
+    + '<div class="wo-meta">' + esc(dts) + (g.tech ? ' \u00b7 \ud83d\udc77 ' + esc(g.tech) + (g.empId ? ' [' + esc(g.empId) + ']' : '') : '') + '</div>'
+    + '</div>'
+    + (archBtn ? '<div style="flex-shrink:0;padding-top:2px;">' + archBtn + '</div>' : '')
+    + '</div>'
     + '<div>' + entries + '</div>'
     + '<div class="wo-foot">'
-    + '<span class="wo-status '+(allPosted?'posted':'pending')+'">'+(allPosted?'\u2713 Posted to FASTER':'\u23f3 Pending')+'</span>'
-    + '<span style="font-size:11px;color:var(--W3);">'+pItems.length+' SKU \u00b7 '+tot+' units'+(oilRow?' \u00b7 \ud83d\udee2 '+oilRow.qty+'qts':'')+'</span>'
+    + '<span class="wo-status ' + (allPosted ? 'posted' : 'pending') + '">' + (allPosted ? '\u2713 Posted to FASTER' : '\u23f3 Pending') + '</span>'
+    + '<span style="font-size:11px;color:var(--W3);">' + pItems.length + ' SKU \u00b7 ' + tot + ' units' + (oilRow ? ' \u00b7 \ud83d\udee2 ' + oilRow.qty + 'qts' : '') + '</span>'
     + '</div></div>';
 }
 
