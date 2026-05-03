@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>GoldenLink 2.0</title>
+<style>
+/* ═══════════════════════════════════════════════════
+   GOLDENLINK 2.0 — PATRIOTIC EDITION
+   Navy / Red / White — Professional · Polished · Fast
+   Mobile-first, iPhone-optimised
+═══════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+
+:root{
+  /* Patriotic palette */
+  --navy:  #0a2240;       /* Deep navy */
+  --navy2: #0d2d55;       /* Navy mid */
+  --navy3: #163d70;       /* Navy light */
+  --red:   #b22234;       /* Old Glory red */
+  --red2:  #cc2936;       /* Bright action red */
+  --redglow:rgba(178,34,52,0.25);
+  --reddim: rgba(178,34,52,0.10);
+  --white: #ffffff;
+  --offwhite:#f4f6f9;
+  --gray:  #e8ecf2;
+  --gray2: #d0d7e3;
+  --gray3: #a0aaba;
+  --text:  #0a1628;       /* Near-black text */
+  --text2: #3d5070;       /* Muted text */
+  --text3: #7a8faa;       /* Dim text */
+  --gold:  #c9a84c;       /* Star gold accent */
+  --green: #1a7a3f;
+  --green2:#22a350;
+  --orange:#c07010;
+  --blue:  #1254a4;
+  --card:  #ffffff;
+  --card2: #f0f4f9;
+  --surface:#e8ecf4;
+  --line:  rgba(10,34,64,0.10);
+  --line2: rgba(10,34,64,0.06);
+  --shadow:0 2px 12px rgba(10,34,64,0.10);
+  --shadow2:0 4px 24px rgba(10,34,64,0.14);
+  --safe-b:env(safe-area-inset-bottom,34px);
+  --safe-t:env(safe-area-inset-top,44px);
+  --rad:14px;
+  --rad-s:9px;
+}
+
+html,body{
+  min-height:100vh;
+  background:var(--offwhite);
+  font-family:-apple-system,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  color:var(--text);
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+}
+::-webkit-scrollbar{width:0;}
+
+/* ── Animation ── */
+.page{display:none;}
+.page.on{display:block;animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,163,80,.35)}50%{box-shadow:0 0 0 7px rgba(34,163,80,0)}}
+@keyframes pop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+
+/* ════════════════════════════════════════
+   NAV BAR — Navy with stars stripe
+════════════════════════════════════════ */
+.nav{
+  background:var(--navy);
+  padding:env(safe-area-inset-top,44px) 18px 14px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  border-bottom:3px solid var(--red);
+  box-shadow:0 2px 16px rgba(10,34,64,0.3);
+}
+/* Stars stripe on nav */
+.nav::after{
+  content:'★ ★ ★';
+  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  font-size:6px;color:rgba(255,255,255,0.25);letter-spacing:4px;
+  pointer-events:none;
+}
+.nav-brand{display:flex;flex-direction:column;}
+.nav-logo{font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#fff;display:flex;align-items:center;gap:8px;}
+.nav-logo-badge{background:var(--red);color:#fff;font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:.5px;margin-left:2px;vertical-align:middle;}
+.nav-sub{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.5px;margin-top:2px;text-transform:uppercase;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+
+/* ════════════════════════════════════════
+   TAB BAR
+════════════════════════════════════════ */
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--navy);
+  border-top:2px solid var(--red);
+  display:none;padding-bottom:var(--safe-b);z-index:80;
+  box-shadow:0 -2px 20px rgba(10,34,64,0.25);
+}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 0 5px;border:none;background:none;cursor:pointer;font-family:inherit;position:relative;transition:background .15s;}
+.tab:active{background:rgba(255,255,255,0.05);}
+.tab-ico{font-size:21px;line-height:1;margin-bottom:3px;transition:transform .15s;filter:grayscale(1) brightness(0.4);}
+.tab.on .tab-ico{filter:brightness(1.2);transform:scale(1.08);}
+.tab-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.2px;}
+.tab.on .tab-lbl{color:var(--gold);font-weight:700;}
+.tab-bar-ind{position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:3px;border-radius:2px;background:var(--gold);opacity:0;transition:opacity .2s;}
+.tab.on .tab-bar-ind{opacity:1;}
+
+/* ════════════════════════════════════════
+   SCROLL & SECTIONS
+════════════════════════════════════════ */
+.scroll{padding:14px 0 calc(var(--safe-b) + 90px);max-width:600px;margin:0 auto;}
+.sec{font-size:10px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:1.2px;padding:0 16px;margin:20px 0 8px;display:flex;align-items:center;gap:8px;}
+.sec::before{content:'';display:block;width:3px;height:12px;background:var(--red);border-radius:2px;flex-shrink:0;}
+
+/* ════════════════════════════════════════
+   CARDS & ROWS
+════════════════════════════════════════ */
+.card{background:var(--card);border-radius:var(--rad);margin:0 16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);}
+.row{display:flex;align-items:center;padding:13px 16px;min-height:52px;border-bottom:1px solid var(--line2);gap:12px;background:var(--card);}
+.row:last-child{border-bottom:none;}
+.row-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+
+/* ════════════════════════════════════════
+   INPUTS
+════════════════════════════════════════ */
+.inp{flex:1;border:none;outline:none;font-family:inherit;font-size:17px;color:var(--text);background:transparent;min-width:0;-webkit-appearance:none;}
+.inp::placeholder{color:var(--text3);}
+
+/* ════════════════════════════════════════
+   BUTTONS
+════════════════════════════════════════ */
+.btn{display:block;width:calc(100% - 32px);margin:0 16px;padding:15px;border:none;border-radius:var(--rad);font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;text-align:center;-webkit-appearance:none;transition:opacity .12s,transform .1s,box-shadow .15s;letter-spacing:-.1px;}
+.btn:active{opacity:.84;transform:scale(.98);}
+.btn[disabled]{opacity:.35;pointer-events:none;filter:grayscale(.3);}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 16px var(--redglow);}
+.btn-primary:active{box-shadow:0 2px 8px var(--redglow);}
+.btn-navy{background:var(--navy);color:#fff;box-shadow:0 4px 16px rgba(10,34,64,.25);}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy3);}
+.btn-ghost{background:var(--gray);color:var(--text2);border:none;}
+/* Legacy aliases for JS compatibility */
+.btn-R{background:var(--red);color:#fff;box-shadow:0 4px 16px var(--redglow);}
+.btn-fill{background:var(--gray);color:var(--text);}
+.btn-sm{display:inline-flex;align-items:center;justify-content:center;width:auto;margin:0;padding:0 18px;font-size:14px;font-weight:700;border-radius:var(--rad-s);border:none;cursor:pointer;font-family:inherit;min-height:44px;flex-shrink:0;}
+
+/* ════════════════════════════════════════
+   STEPPER
+════════════════════════════════════════ */
+.stepper{display:flex;align-items:center;background:var(--gray);border-radius:10px;border:1px solid var(--line);flex-shrink:0;}
+.step-btn{min-width:44px;min-height:44px;border:none;background:none;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;padding:0;color:var(--red);}
+.step-btn:active{background:var(--reddim);}
+.step-inp{width:36px;border:none;outline:none;font-family:inherit;font-size:16px;font-weight:700;color:var(--text);background:transparent;text-align:center;-webkit-appearance:none;padding:0;}
+
+/* ════════════════════════════════════════
+   ASSET CARD — hero element
+════════════════════════════════════════ */
+.asset-card{
+  background:var(--card);border-radius:var(--rad);margin:0 16px;
+  overflow:hidden;border:1.5px solid var(--line);
+  box-shadow:var(--shadow2);
+  transition:border-color .25s,box-shadow .25s;
+}
+.asset-card:focus-within{border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,34,64,.12),var(--shadow2);}
+.asset-hdr{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  padding:12px 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid var(--red);
+}
+.asset-lbl{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55);}
+.asset-row{display:flex;align-items:center;padding:4px 16px 12px;gap:8px;}
+.asset-inp{flex:1;border:none;outline:none;font-family:inherit;font-size:30px;font-weight:900;color:var(--text);background:transparent;padding:0;letter-spacing:-.8px;-webkit-appearance:none;}
+.asset-inp::placeholder{color:var(--text3);font-weight:400;font-size:22px;letter-spacing:0;}
+.asset-clear{background:var(--gray);border:none;border-radius:50%;width:26px;height:26px;font-size:12px;cursor:pointer;color:var(--text2);flex-shrink:0;display:none;align-items:center;justify-content:center;}
+
+/* Scan + Manual Entry combined card */
+.entry-card{background:var(--card);border-radius:var(--rad);margin:10px 16px 0;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);}
+.scan-row{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);transition:opacity .12s;}
+.scan-row:active{opacity:.85;}
+.scan-ico{width:38px;height:38px;border-radius:10px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px var(--redglow);}
+.scan-txt-main{font-size:15px;font-weight:700;color:#fff;}
+.scan-txt-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;}
+.scan-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25);flex-shrink:0;transition:all .3s;}
+.scan-dot.live{background:var(--green2);box-shadow:0 0 0 3px rgba(34,163,80,.25);animation:pulse 2s infinite;}
+.manual-row{display:flex;align-items:center;padding:11px 16px;gap:10px;border-top:1px solid var(--line2);}
+.manual-inp{flex:1;border:none;outline:none;font-family:-apple-system,monospace;font-size:16px;color:var(--text);background:transparent;min-width:0;-webkit-appearance:none;font-weight:600;letter-spacing:.5px;}
+.manual-inp::placeholder{color:var(--text3);font-weight:400;letter-spacing:0;font-family:inherit;}
+
+/* Camera */
+.cam-wrap{margin:0 16px;border-radius:var(--rad);overflow:hidden;background:#000;display:none;border:1px solid var(--line);box-shadow:var(--shadow);}
+.cam-wrap.on{display:block;}
+#qrDiv{width:100%!important;}
+#qrDiv video{width:100%!important;border-radius:0!important;}
+#qrDiv img{display:none!important;}
+#qrDiv__scan_region{background:transparent!important;}
+#qrDiv__dashboard{background:var(--navy)!important;padding:10px!important;display:flex!important;justify-content:center!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+#qrDiv__dashboard_section_csr button{background:var(--red)!important;color:#fff!important;border:none!important;border-radius:8px!important;font-family:inherit!important;font-weight:700!important;font-size:14px!important;padding:9px 18px!important;cursor:pointer!important;}
+#qrDiv__dashboard_section_swaplink,#qrDiv__status_span{color:rgba(255,255,255,.4)!important;font-size:11px!important;}
+.cam-hint{text-align:center;font-size:13px;color:var(--text2);padding:7px 0 0;min-height:20px;}
+
+/* Tech badge */
+.tech-badge{display:inline-flex;align-items:center;gap:8px;background:var(--navy);border-radius:20px;padding:6px 14px;margin:10px 16px 0;}
+.tech-badge-name{font-size:13px;font-weight:700;color:#fff;}
+.tech-badge-role{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:2px 7px;border-radius:10px;margin-left:2px;}
+.tech-badge-btn{background:none;border:none;font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;}
+
+/* Recent chips */
+.recent-assets{display:flex;gap:8px;flex-wrap:wrap;padding:8px 16px 0;}
+.recent-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--navy3);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.recent-chip:active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* Suggested parts */
+.sugg-wrap{background:var(--card);border:1.5px solid var(--navy);border-radius:var(--rad);margin:0 16px;overflow:hidden;box-shadow:var(--shadow);}
+.sugg-hdr{display:flex;align-items:center;gap:8px;padding:10px 16px 9px;border-bottom:1px solid var(--line2);background:var(--navy);}
+.sugg-hdr-txt{font-size:10px;font-weight:800;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.8px;}
+.sugg-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line2);cursor:pointer;transition:background .1s;}
+.sugg-row:last-child{border-bottom:none;}
+.sugg-row:active{background:var(--gray);}
+.sugg-code{font-family:"SF Mono","Courier New",monospace;font-size:14px;font-weight:700;flex:1;color:var(--text);}
+.sugg-cnt{font-size:11px;font-weight:700;background:var(--navy);color:#fff;border-radius:20px;padding:3px 10px;flex-shrink:0;}
+.sugg-add{background:var(--red);color:#fff;border:none;border-radius:20px;padding:6px 15px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;min-height:34px;}
+
+/* Parts list */
+.part-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line2);}
+.part-row:last-child{border-bottom:none;}
+.part-code{font-family:"SF Mono","Courier New",monospace;font-size:14px;font-weight:700;color:var(--text);flex:1;}
+.part-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* Dup warn */
+.dup-warn{display:none;margin:8px 16px 0;background:rgba(201,168,76,0.12);border:1.5px solid rgba(201,168,76,0.4);border-radius:var(--rad-s);padding:12px 14px;}
+.dup-warn-row{display:flex;align-items:center;gap:10px;}
+.dup-warn-ico{font-size:20px;flex-shrink:0;}
+.dup-warn-txt{flex:1;}
+.dup-warn-ttl{font-size:14px;font-weight:700;color:#8b6a00;}
+.dup-warn-sub{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
+
+/* Feedback */
+.fb{padding:10px 16px;border-radius:var(--rad-s);font-size:14px;font-weight:600;display:none;margin:7px 16px 0;}
+.fb.ok{background:rgba(26,122,63,.08);color:var(--green);display:block;border:1px solid rgba(26,122,63,.2);}
+.fb.err{background:var(--reddim);color:var(--red);display:block;border:1px solid rgba(178,34,52,.2);}
+
+/* Save row */
+.save-row{padding:20px 16px calc(var(--safe-b) + 28px);}
+
+/* Success */
+.success{display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;min-height:65vh;text-align:center;background:var(--offwhite);}
+.success.on{display:flex;animation:pop .38s cubic-bezier(.34,1.56,.64,1);}
+.success-ring{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:22px;box-shadow:0 0 0 14px rgba(34,163,80,.08),0 8px 32px rgba(34,163,80,.28);}
+
+/* ════════════════════════════════════════
+   SHEET (slide-up modal)
+════════════════════════════════════════ */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,34,64,.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.sheet-bg.on{opacity:1;pointer-events:all;}
+.sheet{background:#fff;border-radius:22px 22px 0 0;border-top:3px solid var(--red);width:100%;max-width:600px;padding:12px 0 calc(var(--safe-b)+18px);transform:translateY(100%);transition:transform .34s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(10,34,64,.2);}
+.sheet-bg.on .sheet{transform:translateY(0);}
+.sheet-handle{width:38px;height:4px;border-radius:2px;background:var(--gray2);margin:0 auto 14px;}
+.sheet-ttl{font-size:18px;font-weight:800;padding:0 20px 13px;border-bottom:1px solid var(--line2);margin-bottom:4px;color:var(--navy);}
+
+/* Oil buttons */
+.oil-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px;}
+.oil-btn{background:var(--card2);border:1.5px solid var(--gray2);border-radius:12px;padding:16px 8px;font-family:inherit;font-size:22px;font-weight:900;color:var(--navy);cursor:pointer;text-align:center;-webkit-appearance:none;min-height:70px;transition:all .12s;}
+.oil-btn:active{background:var(--navy);color:#fff;border-color:var(--navy);transform:scale(.96);}
+.oil-btn span{display:block;font-size:10px;font-weight:600;color:var(--text3);margin-top:3px;}
+.oil-custom{display:flex;gap:10px;padding:0 16px 14px;}
+.oil-inp{flex:1;background:var(--card2);border:1.5px solid var(--gray2);border-radius:10px;padding:13px;font-family:inherit;font-size:17px;font-weight:700;color:var(--text);outline:none;-webkit-appearance:none;text-align:center;}
+
+/* Dialog */
+.dlg-bg{position:fixed;inset:0;background:rgba(10,34,64,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.dlg-bg.on{opacity:1;pointer-events:all;}
+.dlg{background:#fff;border-radius:var(--rad);border:1px solid var(--line);border-top:3px solid var(--red);overflow:hidden;width:100%;max-width:320px;transform:scale(.88);transition:transform .22s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow2);}
+.dlg-bg.on .dlg{transform:scale(1);}
+.dlg-top{padding:22px 20px 13px;text-align:center;}
+.dlg-ttl{font-size:17px;font-weight:800;margin-bottom:5px;color:var(--navy);}
+.dlg-msg{font-size:13px;color:var(--text2);line-height:1.55;}
+.dlg-btns{display:flex;border-top:1px solid var(--line2);}
+.dlg-btn{flex:1;padding:15px;border:none;background:none;font-family:inherit;font-size:17px;cursor:pointer;color:var(--navy);transition:background .1s;}
+.dlg-btn:active{background:var(--gray);}
+.dlg-btn.R{color:var(--red);font-weight:700;}
+.dlg-btn.bold{font-weight:700;color:var(--navy);}
+.dlg-btn+.dlg-btn{border-left:1px solid var(--line2);}
+
+/* Toast */
+.toast{position:fixed;bottom:calc(var(--safe-b)+18px);left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:40px;font-size:15px;font-weight:700;z-index:999;transition:transform .32s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:88vw;text-align:center;white-space:nowrap;box-shadow:var(--shadow2);}
+.toast.on{transform:translateX(-50%) translateY(0);}
+
+/* Spinner */
+.spin{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:rot .65s linear infinite;vertical-align:middle;}
+.spin-dark{display:inline-block;width:18px;height:18px;border:2.5px solid var(--line);border-top-color:var(--navy);border-radius:50%;animation:rot .65s linear infinite;vertical-align:middle;}
+
+/* Scan flash */
+#scanFlash{display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;flex-direction:column;background:rgba(10,34,64,.92);pointer-events:none;}
+
+/* ════════════════════════════════════════
+   LOGIN SCREEN
+════════════════════════════════════════ */
+.login-wrap{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--navy) 0%,var(--navy2) 40%,var(--offwhite) 100%);
+  padding:calc(env(safe-area-inset-top,44px) + 24px) 24px calc(env(safe-area-inset-bottom,34px) + 24px);
+}
+.login-hero{text-align:center;margin-bottom:28px;}
+.login-star{font-size:38px;margin-bottom:8px;filter:drop-shadow(0 2px 8px rgba(201,168,76,.6));}
+.login-logo{font-size:36px;font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1;}
+.login-logo em{color:var(--gold);font-style:normal;}
+.login-tagline{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:3px;text-transform:uppercase;margin-top:6px;}
+.login-stripe{display:flex;gap:3px;justify-content:center;margin-top:12px;}
+.login-stripe-bar{height:4px;border-radius:2px;}
+.login-card{background:#fff;border-radius:18px;overflow:hidden;width:100%;max-width:340px;box-shadow:0 8px 40px rgba(10,34,64,.4);border-top:4px solid var(--red);}
+.login-card-hdr{background:var(--navy);padding:16px 20px 14px;border-bottom:1px solid rgba(255,255,255,.1);}
+.login-card-ttl{font-size:12px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px;}
+.login-body{padding:18px;}
+.login-err{background:var(--reddim);color:var(--red);border-radius:var(--rad-s);padding:10px 13px;font-size:13px;margin-bottom:12px;display:none;font-weight:600;border:1px solid rgba(178,34,52,.2);}
+.login-field{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line2);background:#fff;}
+.login-lbl{font-size:12px;color:var(--text3);width:80px;flex-shrink:0;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.login-inp{flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:16px;color:var(--text);-webkit-appearance:none;}
+.login-inp::placeholder{color:var(--text3);}
+.lock-box{background:var(--reddim);border-radius:var(--rad-s);padding:14px;text-align:center;color:var(--red);font-size:14px;font-weight:600;line-height:1.6;display:none;border:1px solid rgba(178,34,52,.2);}
+
+/* ════════════════════════════════════════
+   FASTER NOTICE
+════════════════════════════════════════ */
+.faster-notice{
+  margin:14px 16px 0;
+  background:linear-gradient(135deg,rgba(10,34,64,.06),rgba(10,34,64,.03));
+  border:1.5px solid rgba(10,34,64,.15);
+  border-left:4px solid var(--navy);
+  border-radius:var(--rad);
+  padding:13px 15px;
+}
+
+/* ════════════════════════════════════════
+   OIL INDICATOR
+════════════════════════════════════════ */
+#oilIndicator{display:none;margin:8px 16px 0;background:rgba(192,112,16,.08);border:1.5px solid rgba(192,112,16,.3);border-radius:var(--rad-s);padding:10px 14px;font-size:14px;font-weight:600;color:var(--orange);align-items:center;justify-content:space-between;gap:10px;}
+
+/* ════════════════════════════════════════
+   ADMIN — Report cards
+════════════════════════════════════════ */
+.wo-card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);margin:0 16px 12px;overflow:hidden;box-shadow:var(--shadow);}
+.wo-hdr{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:12px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;border-bottom:2px solid var(--red);}
+.wo-num{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;}
+.wo-asset{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.4px;}
+.wo-meta{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+.wo-row{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line2);gap:12px;}
+.wo-row:last-child{border-bottom:none;}
+.wo-part{font-family:"SF Mono","Courier New",monospace;font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.wo-qty{font-size:16px;font-weight:900;color:var(--red);min-width:32px;text-align:right;}
+.wo-unit{font-size:10px;color:var(--text3);margin-left:3px;}
+.wo-foot{background:var(--card2);border-top:1px solid var(--line2);padding:8px 16px;display:flex;justify-content:space-between;align-items:center;}
+.wo-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.wo-status.pending{background:rgba(192,112,16,.1);color:var(--orange);border:1px solid rgba(192,112,16,.2);}
+.wo-status.posted{background:rgba(26,122,63,.1);color:var(--green);border:1px solid rgba(26,122,63,.2);}
+
+/* Admin sub-tabs */
+.adm-tabs{display:flex;gap:4px;background:var(--card2);border-radius:10px;padding:4px;margin:10px 16px 0;border:1px solid var(--line);}
+.adm-tab{flex:1;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;padding:10px 6px;border-radius:7px;cursor:pointer;color:var(--text2);transition:all .15s;}
+.adm-tab:active{background:var(--gray);}
+.adm-tab.on{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(10,34,64,.25);}
+
+/* Filter / view toggle */
+.filter-bar{display:flex;gap:8px;padding:10px 16px;align-items:center;flex-wrap:wrap;}
+.filter-inp{flex:1;min-width:120px;background:var(--card);border:1px solid var(--gray2);border-radius:var(--rad-s);padding:9px 12px 9px 32px;font-family:inherit;font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' fill='none' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7' stroke='%23999' stroke-width='2'/%3E%3Cpath d='m16 16 4 4' stroke='%23999' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center;}
+.filter-inp::placeholder{color:var(--text3);}
+.filter-sel{background:var(--card);border:1px solid var(--gray2);border-radius:var(--rad-s);padding:9px 10px;font-family:inherit;font-size:13px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer;flex-shrink:0;}
+.vt-wrap{display:flex;gap:3px;background:var(--card2);border-radius:var(--rad-s);padding:3px;flex-shrink:0;border:1px solid var(--gray2);}
+.vt{border:1px solid transparent;background:transparent;font-family:inherit;font-size:13px;font-weight:700;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--text2);transition:all .15s;}
+.vt:active{background:var(--gray);}
+.vt.on{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 1px 6px rgba(10,34,64,.2);}
+
+/* User list */
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line2);}
+.user-row:last-child{border-bottom:none;}
+.user-av{width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.user-av.admin-av{background:var(--navy);}
+.user-info{flex:1;min-width:0;}
+.user-name{font-size:15px;font-weight:600;color:var(--text);}
+.user-meta{font-size:11px;color:var(--text3);margin-top:1px;}
+.user-role{font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;flex-shrink:0;}
+.user-role.admin{background:rgba(10,34,64,.1);color:var(--navy);border:1px solid rgba(10,34,64,.2);}
+.user-role.tech{background:var(--reddim);color:var(--red);border:1px solid rgba(178,34,52,.18);}
+
+/* Loading / Empty */
+.loading{text-align:center;padding:48px 20px;color:var(--text2);}
+.loading-spin{width:26px;height:26px;border:2px solid var(--gray2);border-top-color:var(--navy);border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 12px;}
+.empty{text-align:center;padding:48px 20px;color:var(--text2);}
+.empty-ico{font-size:38px;display:block;margin-bottom:10px;opacity:.5;}
+.empty-ttl{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:5px;}
+.empty-sub{font-size:14px;line-height:1.6;}
+
+/* ════════════════════════════════════════
+   SETTINGS PAGE
+════════════════════════════════════════ */
+.settings-hero{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+  margin:0 16px;border-radius:var(--rad);padding:18px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow2);border-bottom:3px solid var(--red);
+}
+.settings-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--red);display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;color:#fff;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.2);
+}
+.settings-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;}
+.settings-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;}
+.settings-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;margin-top:5px;letter-spacing:.5px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════════ -->
+<div id="loginPage" class="login-wrap">
+  <div class="login-hero">
+    <div class="login-logo">🇺🇸&nbsp;GoldenLink</div>
+    <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-top:4px;">FLEET PARTS MANAGEMENT</div>
+    <div class="login-tagline">Making FASTER Faster</div>
+    <!-- Red / White / Blue stripe -->
+    <div class="login-stripe">
+      <div class="login-stripe-bar" style="width:40px;background:var(--red);"></div>
+      <div class="login-stripe-bar" style="width:40px;background:#fff;opacity:.6;"></div>
+      <div class="login-stripe-bar" style="width:40px;background:var(--navy3);"></div>
+    </div>
+  </div>
+
+  <div class="login-card">
+    <div class="login-card-hdr">
+      <div class="login-card-ttl">🔐 Secure Sign In</div>
+    </div>
+    <div class="login-body">
+      <div class="login-err" id="loginErr"></div>
+      <div id="loginFormWrap">
+        <div style="background:var(--offwhite);border-radius:10px;overflow:hidden;margin-bottom:14px;border:1px solid var(--gray2);">
+          <div class="login-field" style="border-bottom:1px solid var(--gray2);">
+            <div class="login-lbl">User</div>
+            <input class="login-inp" id="loginUser" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" placeholder="username" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus();">
+          </div>
+          <div class="login-field" style="border-bottom:none;">
+            <div class="login-lbl">Password</div>
+            <input class="login-inp" id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin();">
+          </div>
+        </div>
+        <button class="btn btn-primary" id="loginBtn" onclick="doLogin()" style="margin:0;width:100%;border-radius:10px;">Sign In</button>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;cursor:pointer;" onclick="toggleRememberMe()">
+          <div id="rememberBox" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--gray2);background:transparent;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;">
+            <span id="rememberCheck" style="color:var(--red);font-size:13px;display:none;">✓</span>
+          </div>
+          <span style="font-size:13px;color:var(--text2);user-select:none;">Remember me on this device</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px;" id="loginAttemptTxt"></div>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px;">Contact your administrator if you cannot log in.</div>
+      </div>
+      <div class="lock-box" id="loginLockBox">🔒 Too many failed attempts.<br>Wait <strong id="loginLockNum">30</strong> seconds.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:18px;font-size:10px;color:rgba(255,255,255,.25);text-align:center;letter-spacing:1px;">★ &nbsp; CITY OF CONCORD FLEET &nbsp; ★</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TECH PAGE — Log Parts
+══════════════════════════════════════════ -->
+<div id="techPage" class="page" style="display:none;">
+
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <span style="color:var(--gold);">Golden</span><span style="color:#fff;letter-spacing:-.5px;">Link</span>
+        <span class="nav-logo-badge">v2</span>
+      </div>
+      <div class="nav-sub">Making FASTER Faster</div>
+    </div>
+    <div class="nav-right">
+      <div id="navCount" style="background:var(--red);border-radius:20px;padding:4px 12px;display:none;">
+        <span id="navCountTxt" style="font-size:12px;font-weight:700;color:#fff;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech badge -->
+  <div class="tech-badge" id="techBadge">
+    <span>👷</span>
+    <span class="tech-badge-name" id="techBadgeName"></span>
+    <button class="tech-badge-btn" onclick="doLogout()">sign out</button>
+  </div>
+
+  <div id="techForm">
+    <div class="scroll">
+
+      <!-- FASTER REQUIREMENTS — collapsible -->
+      <div style="margin:12px 16px 0;">
+        <button onclick="toggleFasterReqs()" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:rgba(10,34,64,.06);border:1.5px solid rgba(10,34,64,.12);border-radius:var(--rad-s);padding:9px 14px;font-family:inherit;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;text-align:left;">
+          <span>⚠️ &nbsp;FASTER Requirements</span>
+          <span id="fasterReqsChevron" style="font-size:11px;color:var(--text3);transition:transform .2s;">▼</span>
+        </button>
+        <div id="fasterReqs" style="display:none;background:rgba(10,34,64,.04);border:1.5px solid rgba(10,34,64,.1);border-top:none;border-radius:0 0 var(--rad-s) var(--rad-s);padding:10px 14px;">
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+            <div style="margin-bottom:3px;"><span style="color:var(--red);font-weight:800;">1.</span> An <strong style="color:var(--navy);">active open work order</strong> must exist in FASTER before parts can be charged.</div>
+            <div><span style="color:var(--red);font-weight:800;">2.</span> Log all parts <strong style="color:var(--navy);">before</strong> the work order repairs are marked complete.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ASSETS -->
+      <div id="recentWrap" style="display:none;"><div class="recent-assets" id="recentChips"></div></div>
+
+      <!-- ASSET -->
+      <div class="sec" style="margin-top:16px;">Asset / Unit Number</div>
+      <div class="asset-card">
+        <div class="asset-hdr">
+          <div class="asset-lbl">Unit #</div>
+          <button id="clearAsset" class="asset-clear" onclick="clearAsset()" style="display:none;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;color:rgba(255,255,255,.7);align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div class="asset-row">
+          <input type="text" id="assetId" class="asset-inp" autocomplete="off" autocapitalize="characters" oninput="onAssetChange()" placeholder="e.g. PD583">
+        </div>
+      </div>
+
+      <!-- CAMERA -->
+      <div style="padding:8px 16px 0;">
+        <div class="cam-wrap" id="camWrap"><div id="qrDiv"></div></div>
+        <div class="cam-hint" id="camHint"></div>
+      </div>
+      <div class="fb" id="scanFb"></div>
+
+      <!-- DUPLICATE WARNING -->
+      <div class="dup-warn" id="dupWarn">
+        <div class="dup-warn-row">
+          <div class="dup-warn-ico">⚠️</div>
+          <div class="dup-warn-txt">
+            <div class="dup-warn-ttl" id="dupWarnTtl"></div>
+            <div class="dup-warn-sub" id="dupWarnSub"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — dims until asset entered -->
+      <div id="step2" style="opacity:.45;pointer-events:none;transition:opacity .3s;">
+
+        <!-- SUGGESTED PARTS -->
+        <div id="suggWrap" style="display:none;margin-top:14px;">
+          <div class="sugg-wrap">
+            <div class="sugg-hdr">
+              <span style="font-size:14px;">⭐</span>
+              <span class="sugg-hdr-txt">Suggested from History</span>
+            </div>
+            <div id="suggList"></div>
+          </div>
+        </div>
+
+        <!-- SCAN + MANUAL ENTRY — combined, no redundant label -->
+        <div class="sec" style="margin-top:16px;">Add Part</div>
+        <div class="entry-card">
+          <!-- Scan row -->
+          <div class="scan-row" onclick="toggleScan()">
+            <div class="scan-ico">📷</div>
+            <div style="flex:1;">
+              <div class="scan-txt-main">Scan FASTER Barcode</div>
+              <div class="scan-txt-sub">Tap to open camera</div>
+            </div>
+            <div id="scanDot" class="scan-dot"></div>
+          </div>
+          <!-- Manual entry — directly below scan, same card -->
+          <div class="manual-row">
+            <div style="font-size:16px;flex-shrink:0;">✏️</div>
+            <input type="text" id="manCode" class="manual-inp" autocomplete="off" autocapitalize="characters"
+              placeholder="Manual Entry" onkeydown="if(event.key==='Enter'){event.preventDefault();addManual();}">
+            <div class="stepper" style="border-radius:8px;">
+              <button class="step-btn" style="font-size:18px;min-width:38px;min-height:38px;" onclick="stepVal('manQty',-1)">−</button>
+              <input class="step-inp" id="manQty" type="number" value="1" min="1" style="width:28px;font-size:14px;">
+              <button class="step-btn" style="font-size:18px;min-width:38px;min-height:38px;" onclick="stepVal('manQty',1)">+</button>
+            </div>
+            <button class="btn-sm" style="background:var(--red);color:#fff;border-radius:8px;padding:0 14px;min-height:38px;font-size:13px;" onclick="addManual()">Add</button>
+          </div>
+        </div>
+        <div class="fb" id="manFb"></div>
+
+        <!-- PARTS ADDED -->
+        <div class="sec">Parts Added <span id="partBadge" style="font-size:11px;background:var(--navy);color:#fff;border-radius:12px;padding:2px 10px;font-weight:700;"></span></div>
+        <div id="emptyMsg" style="text-align:center;padding:18px;color:var(--text3);font-size:14px;background:var(--card);margin:0 16px;border-radius:var(--rad);border:1px solid var(--line);">No parts added yet</div>
+        <div class="card" id="partsList" style="display:none;"></div>
+
+        <!-- OIL INDICATOR -->
+        <div id="oilIndicator" style="display:none;margin:8px 16px 0;background:rgba(192,112,16,.08);border:1.5px solid rgba(192,112,16,.3);border-radius:var(--rad-s);padding:10px 14px;font-size:14px;font-weight:600;color:var(--orange);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <span id="oilIndicatorTxt"></span>
+          <button onclick="clearPendingOil()" style="background:none;border:none;color:rgba(192,112,16,.5);font-size:18px;cursor:pointer;padding:0;font-family:inherit;">×</button>
+        </div>
+
+        <!-- UNKNOWN PART -->
+        <div class="sec" style="margin-top:22px;">Log Unknown Part</div>
+        <div style="margin:0 16px 8px;background:rgba(192,112,16,.06);border:1.5px solid rgba(192,112,16,.25);border-left:3px solid var(--orange);border-radius:var(--rad);padding:10px 14px;">
+          <div style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:3px;">No part number?</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">Describe the part below — it will be <strong style="color:var(--text);">flagged for admin review</strong>.</div>
+        </div>
+        <div class="card">
+          <div class="row" style="align-items:flex-start;padding:13px 16px;">
+            <div class="row-ico" style="background:rgba(192,112,16,.1);border:1px solid rgba(192,112,16,.2);margin-top:2px;">❓</div>
+            <textarea id="notesField" oninput="step3Check()"
+              placeholder="Describe the part — location, size, color, what it does… e.g. 'rear brake caliper driver side'"
+              autocorrect="off" autocomplete="off" autocapitalize="sentences" spellcheck="false"
+              style="flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--text);background:transparent;resize:none;min-height:70px;line-height:1.5;-webkit-appearance:none;padding:0;"></textarea>
+          </div>
+        </div>
+
+      </div><!-- /step2 -->
+
+      <!-- SAVE BUTTON -->
+      <div class="save-row">
+        <button class="btn btn-primary" id="saveBtn" onclick="showSheet()" disabled style="font-weight:800;font-size:18px;padding:17px;">Save Parts Log</button>
+      </div>
+
+    </div><!-- /scroll -->
+  </div><!-- /techForm -->
+
+  <!-- SUCCESS -->
+  <div class="success" id="successView">
+    <div class="success-ring">✓</div>
+    <div style="font-size:28px;font-weight:900;margin-bottom:8px;letter-spacing:-1px;color:var(--navy);">Parts Logged!</div>
+    <div style="font-size:15px;color:var(--text2);line-height:1.7;max-width:300px;" id="successMsg"></div>
+    <div style="margin-top:28px;">
+      <button class="btn btn-primary" onclick="resetForm()" style="max-width:280px;margin:0 auto;">+ Log More Parts</button>
+    </div>
+  </div>
+
+</div><!-- /techPage -->
+
+<!-- ══════════════════════════════════════════
+     SETTINGS PAGE
+══════════════════════════════════════════ -->
+<div id="settingsPage" class="page" style="display:none;">
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo"><span style="color:var(--gold);">Golden</span><span style="color:#fff;letter-spacing:-.5px;">Link</span> <span style="font-size:.55em;color:rgba(255,255,255,.4);font-weight:600;vertical-align:middle;">Settings</span></div>
+      <div class="nav-sub">Account & Preferences</div>
+    </div>
+  </div>
+
+  <div class="scroll">
+
+    <!-- User profile hero -->
+    <div style="padding-top:14px;">
+      <div class="settings-hero" id="settingsHero">
+        <div class="settings-avatar" id="settingsAvatar">?</div>
+        <div>
+          <div class="settings-name" id="settingsName">—</div>
+          <div class="settings-meta" id="settingsMeta">—</div>
+          <div class="settings-badge" id="settingsBadge">TECHNICIAN</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change password -->
+    <div class="sec" style="margin-top:22px;">Change Password</div>
+    <div class="card">
+      <div class="row">
+        <div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">🔒</div>
+        <input type="password" id="cpCurrent" class="inp" placeholder="Current password" autocomplete="current-password" onkeydown="if(event.key==='Enter')document.getElementById('cpNew').focus();">
+      </div>
+      <div class="row">
+        <div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">🔑</div>
+        <input type="password" id="cpNew" class="inp" placeholder="New password (min 6 chars)" autocomplete="new-password" onkeydown="if(event.key==='Enter')document.getElementById('cpConfirm').focus();">
+      </div>
+      <div class="row">
+        <div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">✓</div>
+        <input type="password" id="cpConfirm" class="inp" placeholder="Confirm new password" autocomplete="new-password" onkeydown="if(event.key==='Enter')changePassword();">
+      </div>
+    </div>
+    <div style="padding:14px 16px 0;">
+      <button class="btn btn-navy" onclick="changePassword()" style="margin:0;width:100%;">Update Password</button>
+    </div>
+    <div class="fb" id="cpFb" style="margin-top:10px;"></div>
+
+    <!-- Sign out -->
+    <div class="sec" style="margin-top:22px;">Account</div>
+    <div class="card">
+      <div class="row" onclick="doLogout()" style="cursor:pointer;">
+        <div class="row-ico" style="background:var(--reddim);border:1px solid rgba(178,34,52,.15);">🚪</div>
+        <div style="flex:1;font-size:16px;font-weight:600;color:var(--text);">Sign Out</div>
+        <div style="font-size:18px;color:var(--text3);">›</div>
+      </div>
+    </div>
+
+    <div style="padding:20px 16px;text-align:center;">
+      <div style="font-size:11px;color:var(--text3);">GoldenLink 2.0 · Concord Fleet Maintenance</div>
+      <div style="font-size:10px;color:var(--gray3);margin-top:4px;letter-spacing:.5px;">★ &nbsp; MAKING FASTER FASTER &nbsp; ★</div>
+    </div>
+
+  </div>
+</div><!-- /settingsPage -->
+
+<!-- ══════════════════════════════════════════
+     ADMIN PAGE
+══════════════════════════════════════════ -->
+<div id="adminPage" class="page" style="display:none;">
+
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo"><span style="color:var(--gold);">Golden</span><span style="color:#fff;letter-spacing:-.5px;">Link</span> <span style="font-size:.55em;color:rgba(255,255,255,.4);font-weight:600;vertical-align:middle;">Admin</span></div>
+      <div class="nav-sub" id="admDateStr"></div>
+    </div>
+    <div class="nav-right">
+      <button onclick="printAll()" style="background:var(--red);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;padding:8px 13px;border-radius:8px;min-height:36px;">🖨 Print</button>
+      <button onclick="doLogout()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;padding:8px 13px;border-radius:8px;min-height:36px;">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="adm-tabs">
+    <button class="adm-tab on" id="atab-report" onclick="setAdmTab('report')">📋 Report</button>
+    <button class="adm-tab" id="atab-failed" onclick="setAdmTab('failed')">⚠️ Failed</button>
+    <button class="adm-tab" id="atab-users" onclick="setAdmTab('users')">👷 Users</button>
+  </div>
+
+  <!-- REPORT -->
+  <div id="admReport">
+    <div class="filter-bar">
+      <div class="vt-wrap">
+        <button class="vt on" id="vt-active" onclick="setView('active')">Active</button>
+        <button class="vt" id="vt-history" onclick="setView('history')">History</button>
+      </div>
+      <input class="filter-inp" id="filterInp" placeholder="Search asset or part…" oninput="filterReport()">
+      <select class="filter-sel" id="filterDate" onchange="loadReport()">
+        <option value="30">30 days</option>
+        <option value="7">7 days</option>
+        <option value="today">Today</option>
+        <option value="all">All time</option>
+      </select>
+    </div>
+    <div style="padding:0 16px 8px;display:flex;gap:8px;">
+      <select class="filter-sel" id="filterTech" onchange="filterReport()" style="flex:1;"><option value="">All Technicians</option></select>
+      <button onclick="loadReport()" style="background:var(--card);border:1px solid var(--gray2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;padding:8px 13px;border-radius:8px;">↺</button>
+    </div>
+    <div class="scroll" style="padding-bottom:calc(var(--safe-b)+100px);" id="reportContent"><div class="loading"><div class="loading-spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- FAILED -->
+  <div id="admFailed" style="display:none;">
+    <div style="padding:12px 16px 6px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+      <div style="font-size:13px;color:var(--text2);line-height:1.5;">Parts that could not post to FASTER, and unknown parts requiring identification.</div>
+      <button onclick="loadFailed()" style="background:var(--card);border:1px solid var(--gray2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;padding:7px 13px;border-radius:8px;flex-shrink:0;">↺</button>
+    </div>
+    <div class="scroll" style="padding-bottom:calc(var(--safe-b)+80px);" id="failedContent"><div class="loading"><div class="loading-spin"></div>Loading…</div></div>
+  </div>
+
+  <!-- USERS -->
+  <div id="admUsers" style="display:none;">
+    <div class="scroll" style="padding-bottom:calc(var(--safe-b)+60px);">
+      <div class="sec" style="margin-top:14px;">All Users</div>
+      <div class="card" id="userList"></div>
+      <div class="sec">Add New User</div>
+      <div class="card">
+        <div class="row"><div class="row-ico" style="background:var(--reddim);border:1px solid rgba(178,34,52,.15);">👤</div><input type="text" id="newName" class="inp" placeholder="Full Name" autocomplete="off" autocapitalize="words" autocorrect="off" onkeydown="if(event.key==='Enter')document.getElementById('newUsername').focus();"></div>
+        <div class="row"><div class="row-ico" style="background:var(--reddim);border:1px solid rgba(178,34,52,.15);">@</div><input type="text" id="newUsername" class="inp" placeholder="Username (unique)" autocomplete="off" autocapitalize="none" autocorrect="off" onkeydown="if(event.key==='Enter')document.getElementById('newEmpId').focus();"></div>
+        <div class="row"><div class="row-ico" style="background:var(--reddim);border:1px solid rgba(178,34,52,.15);">🪪</div><input type="text" id="newEmpId" class="inp" placeholder="Employee ID (unique)" autocomplete="off" autocapitalize="none" autocorrect="off" onkeydown="if(event.key==='Enter')document.getElementById('newPass').focus();"></div>
+        <div class="row"><div class="row-ico" style="background:var(--reddim);border:1px solid rgba(178,34,52,.15);">🔑</div><input type="password" id="newPass" class="inp" placeholder="Password" autocomplete="new-password" onkeydown="if(event.key==='Enter')addUser();"></div>
+        <div class="row" onclick="toggleAdminRole()" style="cursor:pointer;">
+          <div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">🛡</div>
+          <div style="flex:1;"><div style="font-size:16px;color:var(--text);font-weight:500;">Admin Role</div><div style="font-size:11px;color:var(--text3);margin-top:1px;" id="adminRoleDesc">Standard technician access</div></div>
+          <div id="adminToggle" style="width:50px;height:28px;border-radius:28px;background:var(--gray2);border:1px solid var(--gray2);position:relative;flex-shrink:0;transition:background .25s,border-color .25s;cursor:pointer;">
+            <div id="adminToggleThumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,.2);"></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:14px 16px 0;"><button class="btn btn-primary" id="addUserBtn" onclick="addUser()" style="margin:0;width:100%;">Add User</button></div>
+      <div class="fb" id="userFb" style="margin-top:10px;"></div>
+
+      <!-- Admin change password section -->
+      <div class="sec" style="margin-top:22px;">Change My Password</div>
+      <div class="card">
+        <div class="row"><div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">🔒</div><input type="password" id="cpCurrentAdmin" class="inp" placeholder="Current password" autocomplete="current-password" onkeydown="if(event.key==='Enter')document.getElementById('cpNewAdmin').focus();"></div>
+        <div class="row"><div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">🔑</div><input type="password" id="cpNewAdmin" class="inp" placeholder="New password" autocomplete="new-password" onkeydown="if(event.key==='Enter')document.getElementById('cpConfirmAdmin').focus();"></div>
+        <div class="row"><div class="row-ico" style="background:rgba(10,34,64,.08);border:1px solid var(--line);">✓</div><input type="password" id="cpConfirmAdmin" class="inp" placeholder="Confirm new password" autocomplete="new-password" onkeydown="if(event.key==='Enter')changePasswordAdmin();"></div>
+      </div>
+      <div style="padding:14px 16px 0;"><button class="btn btn-navy" onclick="changePasswordAdmin()" style="margin:0;width:100%;">Update Password</button></div>
+      <div class="fb" id="cpFbAdmin" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+</div><!-- /adminPage -->
+
+<!-- ══════════════════════════════════════════
+     TAB BAR
+══════════════════════════════════════════ -->
+<div class="tabbar" id="tabBar" style="display:flex;">
+  <button class="tab on" id="tab-tech" onclick="switchTab('tech')">
+    <div class="tab-ico">🔧</div><div class="tab-lbl">Log Parts</div><div class="tab-bar-ind"></div>
+  </button>
+  <button class="tab" id="tab-settings" onclick="switchTab('settings')">
+    <div class="tab-ico">⚙️</div><div class="tab-lbl">Settings</div><div class="tab-bar-ind"></div>
+  </button>
+  <button class="tab" id="tab-admin" onclick="switchTab('admin')">
+    <div class="tab-ico">📋</div><div class="tab-lbl">Admin</div><div class="tab-bar-ind"></div>
+  </button>
+</div>
+
+<!-- OIL SHEET -->
+<div class="sheet-bg" id="oilSheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-ttl">🛢 Add Oil / ATF?</div>
+    <div style="padding:8px 16px 0;font-size:14px;color:var(--text2);">Select quantity or skip.</div>
+    <div class="oil-grid">
+      <button class="oil-btn" onclick="setOil(6)">6<span>qts</span></button>
+      <button class="oil-btn" onclick="setOil(8)">8<span>qts</span></button>
+      <button class="oil-btn" onclick="setOil(12)">12<span>qts</span></button>
+      <button class="oil-btn" onclick="setOil(15)">15<span>qts</span></button>
+      <button class="oil-btn" onclick="setOil(19)">19<span>qts</span></button>
+      <button class="oil-btn" onclick="setOil(21)">21<span>qts</span></button>
+    </div>
+    <div class="oil-custom">
+      <input class="oil-inp" id="oilCustom" type="number" min="0.5" step="0.5" placeholder="Custom qts">
+      <button class="btn-sm" style="background:var(--red);color:#fff;border-radius:8px;" onclick="setOilCustom()">Add</button>
+    </div>
+    <div style="padding:0 16px 8px;"><button class="btn btn-outline" onclick="skipOil()">Skip — No Oil</button></div>
+  </div>
+</div>
+
+<!-- SAVE CONFIRM SHEET -->
+<div class="sheet-bg" id="saveSheet">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-ttl">Confirm Parts Log</div>
+    <div style="padding:8px 0;">
+      <div class="card" style="margin-bottom:8px;">
+        <div class="row"><div style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;width:52px;">Asset</div><div style="font-size:19px;font-weight:900;color:var(--navy);" id="sheetAsset"></div></div>
+        <div class="row" style="border-top:1px solid var(--line2);"><div style="color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;width:52px;">Tech</div><div style="font-size:15px;font-weight:700;color:var(--red);" id="sheetTech"></div></div>
+      </div>
+      <div style="background:var(--card2);border-radius:var(--rad);border:1px solid var(--line2);margin:0 16px;overflow:hidden;" id="sheetRows"></div>
+      <div style="padding:10px 16px 4px;display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Total</span><span id="sheetTotal" style="font-weight:800;color:var(--navy);"></span></div>
+    </div>
+    <div style="padding:12px 0 0;">
+      <button class="btn btn-primary" id="confirmBtn" onclick="finalSave()" style="margin-bottom:10px;font-weight:800;">Save to Log</button>
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE CONFIRM -->
+<div class="dlg-bg" id="dlgBg">
+  <div class="dlg">
+    <div class="dlg-top"><div class="dlg-ttl">Archive Asset?</div><div class="dlg-msg" id="dlgMsg"></div></div>
+    <div class="dlg-btns"><button class="dlg-btn bold" onclick="cancelDlg()">Cancel</button><button class="dlg-btn R" onclick="doArchive()">Archive</button></div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="dlg-bg" id="dlgDelBg">
+  <div class="dlg">
+    <div class="dlg-top">
+      <div style="font-size:32px;margin-bottom:8px;">🗑️</div>
+      <div class="dlg-ttl">Permanently Delete?</div>
+      <div class="dlg-msg" id="dlgDelMsg"></div>
+      <div style="margin-top:10px;background:var(--reddim);border:1px solid rgba(178,34,52,.2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--red);font-weight:600;">⚠️ Cannot be undone. Permanently removes from database.</div>
+    </div>
+    <div class="dlg-btns"><button class="dlg-btn bold" onclick="cancelDelDlg()">Cancel</button><button class="dlg-btn R" onclick="doDelete()">Delete Forever</button></div>
+  </div>
+</div>
+
+<!-- SCAN FLASH -->
+<div id="scanFlash" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;flex-direction:column;background:rgba(10,34,64,.92);pointer-events:none;">
+  <div style="font-size:64px;line-height:1;margin-bottom:10px;">✅</div>
+  <div id="scanFlashCode" style="font-family:'SF Mono','Courier New',monospace;font-size:24px;font-weight:800;color:#fff;letter-spacing:1px;"></div>
+  <div style="font-size:13px;color:rgba(255,255,255,.45);margin-top:6px;">Part added</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* GoldenLink 2.0 — Production JavaScript
+   Users stored in Supabase gl_users table.
+   No ES6, no crypto.subtle, no Promises in auth.
+*/
+
+// ═══════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════════════
+var SB  = 'https://uyutulgscdcdjrtxkhcc.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dXR1bGdzY2RjZGpydHhraGNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg3NzgsImV4cCI6MjA5MzA4NDc3OH0.1EwNPfdMLqp5TWfYJPQkfylXJBys7VHncufWfiCJ9rc';
+
+function sbHdrs(prefer) {
+  var h = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
+  if (prefer) h['Prefer'] = prefer;
+  return h;
+}
+function sbGet(path, cb) {
+  fetch(SB + path, { method: 'GET', headers: sbHdrs() })
+    .then(function(r) {
+      return r.text().then(function(t) {
+        try { cb(r.ok, JSON.parse(t || '[]'), r.status); }
+        catch(e) { cb(r.ok, [], r.status); }
+      });
+    })
+    .catch(function(e) { cb(false, [], 0); });
+}
+function sbPost(path, body, cb) {
+  fetch(SB + path, { method: 'POST', headers: sbHdrs('return=minimal'), body: JSON.stringify(body) })
+    .then(function(r) { r.text().then(function(t) { cb(r.ok, t, r.status); }); })
+    .catch(function(e) { cb(false, String(e), 0); });
+}
+function sbPatch(path, body, cb) {
+  fetch(SB + path, { method: 'PATCH', headers: sbHdrs('return=minimal'), body: JSON.stringify(body) })
+    .then(function(r) { cb(r.ok, r.status); })
+    .catch(function(e) { cb(false, 0); });
+}
+function sbDelete(path, cb) {
+  fetch(SB + path, { method: 'DELETE', headers: sbHdrs('return=minimal') })
+    .then(function(r) { cb(r.ok, r.status); })
+    .catch(function(e) { cb(false, 0); });
+}
+
+// ═══════════════════════════════════════════════════
+//  PASSWORD HASHING — sync pure ES5, no crypto API
+// ═══════════════════════════════════════════════════
+function hashPass(pwd) {
+  var str = 'gl2:' + pwd + ':goldenlink';
+  var h1 = 5381, h2 = 52711;
+  for (var i = 0; i < str.length; i++) {
+    var ch = str.charCodeAt(i);
+    h1 = (((h1 << 5) + h1) ^ ch) >>> 0;
+    h2 = (((h2 << 5) + h2) ^ (ch * 31)) >>> 0;
+  }
+  function hex8(n) {
+    var s = (n >>> 0).toString(16);
+    while (s.length < 8) s = '0' + s;
+    return s;
+  }
+  return hex8(h1) + hex8(h2) + hex8((h1 ^ (h2 >> 3)) >>> 0) + hex8((h2 ^ (h1 >> 5)) >>> 0);
+}
+
+// ═══════════════════════════════════════════════════
+//  REMEMBER ME
+// ═══════════════════════════════════════════════════
+var rememberMe = false;
+
+function toggleRememberMe() {
+  rememberMe = !rememberMe;
+  var box   = document.getElementById('rememberBox');
+  var check = document.getElementById('rememberCheck');
+  if (box)   { box.style.background  = rememberMe ? 'var(--R)' : 'transparent'; box.style.borderColor = rememberMe ? 'var(--R)' : 'rgba(255,255,255,0.2)'; }
+  if (check) check.style.display = rememberMe ? 'block' : 'none';
+  if (!rememberMe) { try { localStorage.removeItem('gl2_saved_creds'); } catch(e) {} }
+}
+function loadSavedCredentials() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('gl2_saved_creds') || 'null');
+    if (!saved || !saved.u || !saved.p) return;
+    var uEl = document.getElementById('loginUser');
+    var pEl = document.getElementById('loginPass');
+    if (uEl) uEl.value = saved.u;
+    if (pEl) pEl.value = saved.p;
+    rememberMe = true;
+    var box   = document.getElementById('rememberBox');
+    var check = document.getElementById('rememberCheck');
+    if (box)   { box.style.background = 'var(--R)'; box.style.borderColor = 'var(--R)'; }
+    if (check) check.style.display = 'block';
+  } catch(e) {}
+}
+function saveCredentials(username, password) {
+  if (!rememberMe) return;
+  try { localStorage.setItem('gl2_saved_creds', JSON.stringify({ u: username, p: password })); } catch(e) {}
+}
+function clearSavedCredentials() {
+  try { localStorage.removeItem('gl2_saved_creds'); } catch(e) {}
+}
+
+
+// ─── FASTER requirements toggle ──────────────────────
+function toggleFasterReqs() {
+  var panel    = document.getElementById('fasterReqs');
+  var chevron  = document.getElementById('fasterReqsChevron');
+  var open     = panel.style.display !== 'none';
+  panel.style.display   = open ? 'none'    : 'block';
+  chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+// ═══════════════════════════════════════════════════
+//  SESSION STATE
+// ═══════════════════════════════════════════════════
+var session = { user: null, isAdmin: false };
+var loginTries = 0, loginLockInt = null, loginLockSec = 0;
+
+// ═══════════════════════════════════════════════════
+//  AUTHENTICATION
+// ═══════════════════════════════════════════════════
+function doLogin() {
+  if (loginLockInt) return;
+  var uEl   = document.getElementById('loginUser');
+  var pEl   = document.getElementById('loginPass');
+  var eEl   = document.getElementById('loginErr');
+  var btnEl = document.getElementById('loginBtn');
+  var username = (uEl.value || '').trim().toLowerCase();
+  var password = (pEl.value || '');
+  if (!username || !password) { eEl.textContent = 'Enter your username and password.'; eEl.style.display = 'block'; return; }
+  if (btnEl) { btnEl.innerHTML = '<span class="spin"></span>'; btnEl.disabled = true; }
+  eEl.style.display = 'none';
+  sbGet('/rest/v1/gl_users?username=eq.' + encodeURIComponent(username) + '&select=*&limit=1', function(ok, data, status) {
+    if (btnEl) { btnEl.innerHTML = 'Sign In'; btnEl.disabled = false; }
+    if (!ok) {
+      eEl.textContent = status === 0 ? 'Connection error. Check network.' : 'Login error (HTTP ' + status + '). Run Supabase SQL setup.';
+      eEl.style.display = 'block';
+      return;
+    }
+    var user = (data && data.length) ? data[0] : null;
+    if (!user) { onLoginFail('Incorrect username or password.'); return; }
+    var hash = hashPass(password);
+    if (hash === user.pass_hash) {
+      loginTries = 0;
+      eEl.style.display = 'none';
+      saveCredentials(username, password);
+      pEl.value = '';
+      session.user    = user;
+      session.isAdmin = (user.role === 'admin');
+      onLoginSuccess();
+    } else {
+      onLoginFail('Incorrect username or password.');
+    }
+  });
+}
+
+function onLoginFail(msg) {
+  loginTries++;
+  document.getElementById('loginPass').value = '';
+  var rem = 5 - loginTries;
+  var eEl = document.getElementById('loginErr');
+  if (loginTries >= 5) {
+    loginLockSec = 30;
+    document.getElementById('loginFormWrap').style.display = 'none';
+    document.getElementById('loginLockBox').style.display  = 'block';
+    document.getElementById('loginLockNum').textContent    = loginLockSec;
+    loginLockInt = setInterval(function() {
+      loginLockSec--;
+      document.getElementById('loginLockNum').textContent = loginLockSec;
+      if (loginLockSec <= 0) {
+        clearInterval(loginLockInt); loginLockInt = null; loginTries = 0;
+        document.getElementById('loginFormWrap').style.display = 'block';
+        document.getElementById('loginLockBox').style.display  = 'none';
+        document.getElementById('loginAttemptTxt').textContent = '';
+      }
+    }, 1000);
+  } else {
+    eEl.textContent = msg + (rem > 0 ? ' ' + rem + ' attempt' + (rem === 1 ? '' : 's') + ' remaining.' : '');
+    eEl.style.display = 'block';
+    document.getElementById('loginAttemptTxt').textContent = loginTries + ' of 5 attempts';
+  }
+}
+
+function onLoginSuccess() {
+  document.getElementById('tab-admin').style.display    = session.isAdmin ? 'flex' : 'none';
+  var stab = document.getElementById('tab-settings');
+  if (stab) stab.style.display = 'flex';  // Settings visible to all users
+  document.getElementById('tab-settings').style.display = 'flex';
+  document.getElementById('techBadgeName').textContent =
+    session.user.name + (session.user.emp_id ? ' · ' + session.user.emp_id : '');
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('techPage').style.display  = 'block';
+  document.getElementById('techPage').className      = 'page on';
+  document.getElementById('tabBar').style.display    = 'flex';
+  updateSettingsHero();
+  renderRecentAssets();
+  setTimeout(function() { var a = document.getElementById('assetId'); if (a) a.focus(); }, 300);
+}
+
+function doLogout() {
+  session.user = null; session.isAdmin = false;
+  loginTries = 0;
+  if (loginLockInt) { clearInterval(loginLockInt); loginLockInt = null; }
+  parts = []; pendingOil = 0;
+  hideSugg(); hideDupWarn();
+  renderParts(); step3Check();
+  document.getElementById('techForm').style.display  = 'block';
+  document.getElementById('successView').className   = 'success';
+  document.getElementById('admReport').style.display = 'block';
+  document.getElementById('admFailed').style.display = 'none';
+  document.getElementById('admUsers').style.display  = 'none';
+  document.getElementById('atab-report').className   = 'adm-tab on';
+  document.getElementById('atab-failed').className   = 'adm-tab';
+  document.getElementById('atab-users').className    = 'adm-tab';
+  var sp = document.getElementById('settingsPage'); if(sp){sp.style.display='none';sp.className='page';}
+  document.getElementById('assetId').value           = '';
+  document.getElementById('manCode').value           = '';
+  document.getElementById('manQty').value            = '1';
+  document.getElementById('notesField').value        = '';
+  var ind = document.getElementById('oilIndicator'); if (ind) ind.style.display = 'none';
+  allData = []; curView = 'active';
+  resetAdminToggle(); stopScan();
+  document.getElementById('techPage').style.display  = 'none';
+  document.getElementById('techPage').className      = 'page';
+  document.getElementById('settingsPage').style.display = 'none';
+  document.getElementById('settingsPage').className    = 'page';
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('adminPage').className     = 'page';
+  document.getElementById('tabBar').style.display    = 'none';
+  var sts=document.getElementById('tab-settings');if(sts)sts.style.display='none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginErr').style.display  = 'none';
+  document.getElementById('loginAttemptTxt').textContent = '';
+  if (rememberMe) { loadSavedCredentials(); }
+  else { document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = ''; }
+}
+
+// ═══════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ═══════════════════════════════════════════════════
+function switchTab(t) {
+  if (t === 'admin' && !session.isAdmin) { showToast('Admin access only'); return; }
+  var pages = ['techPage','settingsPage','adminPage'];
+  var tabs  = ['tab-tech','tab-settings','tab-admin'];
+  for (var i=0;i<pages.length;i++){
+    var pg=document.getElementById(pages[i]);
+    if(pg){pg.style.display='none';pg.className='page';}
+    var tb=document.getElementById(tabs[i]);
+    if(tb)tb.className='tab';
+  }
+  var show = t==='tech'?'techPage':t==='settings'?'settingsPage':'adminPage';
+  var tabId= t==='tech'?'tab-tech':t==='settings'?'tab-settings':'tab-admin';
+  var pg=document.getElementById(show);if(pg){pg.style.display='block';pg.className='page on';}
+  var tb=document.getElementById(tabId);if(tb)tb.className='tab on';
+
+  if (t === 'settings') {
+    updateSettingsHero();
+  }
+  if (t === 'admin') {
+    document.getElementById('admDateStr').textContent =
+      new Date().toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+    loadReport();
+    populateTechFilter();
+    checkFailedCount();
+  }
+}
+
+function updateSettingsHero() {
+  if (!session.user) return;
+  var ini = '', parts2 = (session.user.name||'').split(' ');
+  for (var k=0;k<parts2.length;k++){if(parts2[k])ini+=parts2[k][0];}
+  ini = ini.toUpperCase().slice(0,2)||'??';
+  var av = document.getElementById('settingsAvatar');
+  var nm = document.getElementById('settingsName');
+  var mt = document.getElementById('settingsMeta');
+  var bg = document.getElementById('settingsBadge');
+  if(av) av.textContent = ini;
+  if(nm) nm.textContent = session.user.name||'—';
+  if(mt) mt.textContent = '@'+session.user.username+' · EMP: '+(session.user.emp_id||'—');
+  if(bg) bg.textContent = session.isAdmin ? '★ ADMINISTRATOR' : 'TECHNICIAN';
+  if(bg && session.isAdmin) bg.style.background = '#1254a4';
+}
+
+// ═══════════════════════════════════════════════════
+//  ADMIN SUB-TABS
+// ═══════════════════════════════════════════════════
+function setAdmTab(t) {
+  document.getElementById('admReport').style.display = (t==='report') ? 'block' : 'none';
+  document.getElementById('admFailed').style.display = (t==='failed') ? 'block' : 'none';
+  document.getElementById('admUsers').style.display  = (t==='users')  ? 'block' : 'none';
+  document.getElementById('atab-report').className   = (t==='report') ? 'adm-tab on' : 'adm-tab';
+  document.getElementById('atab-failed').className   = (t==='failed') ? 'adm-tab on' : 'adm-tab';
+  document.getElementById('atab-users').className    = (t==='users')  ? 'adm-tab on' : 'adm-tab';
+  if (t === 'users')  renderUserList();
+  if (t === 'failed') loadFailed();
+}
+
+// ═══════════════════════════════════════════════════
+//  USER MANAGEMENT
+// ═══════════════════════════════════════════════════
+function renderUserList() {
+  var el = document.getElementById('userList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><div class="loading-spin"></div></div>';
+  sbGet('/rest/v1/gl_users?select=*&order=name.asc', function(ok, data) {
+    if (!ok || !data || !data.length) {
+      el.innerHTML = '<div class="empty" style="padding:20px;"><div class="empty-sub">' + (ok ? 'No users found.' : 'Could not load users.') + '</div></div>';
+      return;
+    }
+    var h = '';
+    for (var i = 0; i < data.length; i++) {
+      var u = data[i], isAdm = (u.role === 'admin');
+      var ini = '', parts2 = (u.name || '').split(' ');
+      for (var k = 0; k < parts2.length; k++) { if (parts2[k]) ini += parts2[k][0]; }
+      ini = ini.toUpperCase().slice(0, 2) || '??';
+      h += '<div class="user-row">'
+        + '<div class="user-av ' + (isAdm ? 'admin-av' : '') + '">' + esc(ini) + '</div>'
+        + '<div class="user-info"><div class="user-name">' + esc(u.name) + '</div>'
+        + '<div class="user-meta">@' + esc(u.username) + ' &nbsp;&middot;&nbsp; ID: ' + esc(u.emp_id || '') + '</div></div>'
+        + '<span class="user-role ' + (isAdm ? 'admin' : 'tech') + '">' + (isAdm ? 'Admin' : 'Tech') + '</span>'
+        + '<button data-uid="' + esc(u.id) + '" data-name="' + esc(u.name) + '" onclick="deleteUser(this.getAttribute(\'data-uid\'),this.getAttribute(\'data-name\'))" '
+        + 'style="min-width:44px;min-height:44px;background:none;border:none;color:var(--R);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>'
+        + '</div>';
+    }
+    el.innerHTML = h;
+  });
+}
+
+function addUser() {
+  var name     = (document.getElementById('newName').value     || '').trim();
+  var username = (document.getElementById('newUsername').value || '').trim().toLowerCase();
+  var empId    = (document.getElementById('newEmpId').value    || '').trim().toUpperCase();
+  var pass     = (document.getElementById('newPass').value     || '');
+  if (!name)                                { showFb('userFb','err','Full name is required'); return; }
+  if (!username)                            { showFb('userFb','err','Username is required'); return; }
+  if (!/^[a-z0-9_]{3,20}$/.test(username)) { showFb('userFb','err','Username: 3-20 chars, letters/numbers/underscore'); return; }
+  if (!empId)                               { showFb('userFb','err','Employee ID is required'); return; }
+  if (!pass || pass.length < 6)             { showFb('userFb','err','Password must be at least 6 characters'); return; }
+  var addBtn = document.getElementById('addUserBtn');
+  if (addBtn) { addBtn.disabled = true; addBtn.textContent = 'Adding\u2026'; }
+  sbGet('/rest/v1/gl_users?or=(username.eq.' + encodeURIComponent(username) + ',emp_id.eq.' + encodeURIComponent(empId) + ')&select=username,emp_id', function(ok, existing) {
+    if (!ok) {
+      if (addBtn) { addBtn.disabled=false; addBtn.textContent='Add User'; }
+      showFb('userFb','err','Could not verify \u2014 check connection'); return;
+    }
+    for (var i = 0; i < existing.length; i++) {
+      if (existing[i].username === username) { if(addBtn){addBtn.disabled=false;addBtn.textContent='Add User';} showFb('userFb','err','Username already exists'); return; }
+      if (existing[i].emp_id  === empId)    { if(addBtn){addBtn.disabled=false;addBtn.textContent='Add User';} showFb('userFb','err','Employee ID already exists'); return; }
+    }
+    sbPost('/rest/v1/gl_users', { name:name, username:username, emp_id:empId, role:isAdminRole?'admin':'tech', pass_hash:hashPass(pass) }, function(ok2, detail, status) {
+      if (addBtn) { addBtn.disabled=false; addBtn.textContent='Add User'; }
+      if (!ok2) { showFb('userFb','err','Save failed (HTTP '+status+'): '+String(detail).slice(0,80)); return; }
+      document.getElementById('newName').value=''; document.getElementById('newUsername').value='';
+      document.getElementById('newEmpId').value=''; document.getElementById('newPass').value='';
+      resetAdminToggle(); renderUserList(); populateTechFilter();
+      showFb('userFb','ok', name+' added successfully'); showToast(name+' added \u2713');
+    });
+  });
+}
+
+function deleteUser(uid, name) {
+  if (session.user && String(session.user.id) === String(uid)) { showFb('userFb','err','Cannot delete your own account'); return; }
+  if (!confirm('Remove "' + (name||uid) + '"? This cannot be undone.')) return;
+  sbDelete('/rest/v1/gl_users?id=eq.' + encodeURIComponent(uid), function(ok) {
+    if (ok) { renderUserList(); populateTechFilter(); showToast('User removed'); }
+    else    { showFb('userFb','err','Delete failed \u2014 try again'); }
+  });
+}
+
+function changePassword() {
+  var current  = (document.getElementById('cpCurrent').value || '');
+  var newPass  = (document.getElementById('cpNew').value     || '');
+  var confirm2 = (document.getElementById('cpConfirm').value || '');
+  if (!current)            { showFb('cpFb','err','Enter your current password'); return; }
+  if (!newPass)            { showFb('cpFb','err','Enter a new password'); return; }
+  if (newPass.length < 6)  { showFb('cpFb','err','New password must be at least 6 characters'); return; }
+  if (newPass !== confirm2) { showFb('cpFb','err','Passwords do not match'); return; }
+  if (!session.user)       { showFb('cpFb','err','Not logged in'); return; }
+  if (hashPass(current) !== session.user.pass_hash) {
+    showFb('cpFb','err','Current password is incorrect');
+    document.getElementById('cpCurrent').value = ''; return;
+  }
+  var newHash = hashPass(newPass);
+  sbPatch('/rest/v1/gl_users?id=eq.' + encodeURIComponent(session.user.id), { pass_hash: newHash }, function(ok) {
+    if (!ok) { showFb('cpFb','err','Update failed \u2014 try again'); return; }
+    session.user.pass_hash = newHash;
+    document.getElementById('cpCurrent').value=''; document.getElementById('cpNew').value=''; document.getElementById('cpConfirm').value='';
+    showFb('cpFb','ok','Password updated successfully'); showToast('Password updated \u2713');
+  });
+}
+
+function populateTechFilter() {
+  var sel = document.getElementById('filterTech'); if (!sel) return;
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">All Technicians</option>';
+  sbGet('/rest/v1/gl_users?select=name&order=name.asc', function(ok, data) {
+    if (!ok || !data) return;
+    for (var i = 0; i < data.length; i++) {
+      var o = document.createElement('option');
+      o.value = data[i].name; o.textContent = data[i].name;
+      if (data[i].name === cur) o.selected = true;
+      sel.appendChild(o);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  ADMIN ROLE TOGGLE
+// ═══════════════════════════════════════════════════
+var isAdminRole = false;
+function toggleAdminRole() {
+  isAdminRole = !isAdminRole;
+  var trk=document.getElementById('adminToggle'), thm=document.getElementById('adminToggleThumb'), dsc=document.getElementById('adminRoleDesc');
+  if(trk){trk.style.background=isAdminRole?'var(--navy)':'var(--gray2)';trk.style.borderColor=isAdminRole?'var(--navy)':'var(--gray2)';}
+  if(thm)thm.style.left=isAdminRole?'25px':'3px';
+  if(dsc)dsc.textContent=isAdminRole?'Full admin access \u2014 report & user management':'Standard technician access';
+}
+function resetAdminToggle() {
+  isAdminRole=false;
+  var trk=document.getElementById('adminToggle'),thm=document.getElementById('adminToggleThumb'),dsc=document.getElementById('adminRoleDesc');
+  if(trk){trk.style.background='var(--gray2)';trk.style.borderColor='var(--gray2)';}
+  if(thm)thm.style.left='3px';
+  if(dsc)dsc.textContent='Standard technician access';
+}
+
+// ═══════════════════════════════════════════════════
+//  TECH STATE
+// ═══════════════════════════════════════════════════
+var parts=[], qrScan=null, scanning=false, scanCool=false;
+
+// ═══════════════════════════════════════════════════
+//  RECENT ASSETS
+// ═══════════════════════════════════════════════════
+function getRecentAssets() {
+  if (!session.user) return [];
+  try { return JSON.parse(localStorage.getItem('gl2_recent_' + session.user.id) || '[]'); } catch(e) { return []; }
+}
+function saveRecentAsset(asset) {
+  if (!asset || !session.user) return;
+  var key='gl2_recent_'+session.user.id, recent=getRecentAssets(), clean=[];
+  for(var i=0;i<recent.length;i++){if(recent[i]!==asset)clean.push(recent[i]);}
+  clean.unshift(asset); if(clean.length>5)clean=clean.slice(0,5);
+  try{localStorage.setItem(key,JSON.stringify(clean));}catch(e){}
+}
+function renderRecentAssets() {
+  var recent=getRecentAssets(), wrap=document.getElementById('recentWrap'), chips=document.getElementById('recentChips');
+  if(!wrap||!chips)return;
+  if(!recent.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  var h='';
+  for(var i=0;i<recent.length;i++){
+    h+='<button class="recent-chip" data-asset="'+esc(recent[i])+'" onclick="selectRecentAsset(this)">'
+      +'<span style="opacity:.5;font-size:12px;">\u23f0</span> '+esc(recent[i])+'</button>';
+  }
+  chips.innerHTML=h;
+}
+function selectRecentAsset(btn) {
+  document.getElementById('assetId').value=btn.getAttribute('data-asset');
+  onAssetChange(); document.getElementById('assetId').focus();
+}
+
+// ═══════════════════════════════════════════════════
+//  ASSET FIELD
+// ═══════════════════════════════════════════════════
+var suggTimer=null;
+function onAssetChange() {
+  var raw=document.getElementById('assetId').value, a=raw.trim().toUpperCase();
+  if(a!==raw)document.getElementById('assetId').value=a;
+  var ok=a.length>0, s2=document.getElementById('step2');
+  s2.style.opacity=ok?'1':'.45'; s2.style.pointerEvents=ok?'all':'none';
+  document.getElementById('clearAsset').style.display=ok?'block':'none';
+  if(!ok){parts=[];pendingOil=0;renderParts();step3Check();hideSugg();hideDupWarn();
+    var ind=document.getElementById('oilIndicator');if(ind)ind.style.display='none';return;}
+  step3Check(); loadSuggestions(a); checkDuplicate(a);
+}
+function clearAsset() {
+  document.getElementById('assetId').value=''; parts=[]; pendingOil=0;
+  renderParts(); onAssetChange(); step3Check(); document.getElementById('assetId').focus();
+}
+
+// ═══════════════════════════════════════════════════
+//  SUGGESTED PARTS — includes oil from history
+// ═══════════════════════════════════════════════════
+function loadSuggestions(asset) {
+  clearTimeout(suggTimer);
+  suggTimer = setTimeout(function() {
+    sbGet('/rest/v1/parts_log?asset_key=eq.' + encodeURIComponent(asset.toLowerCase()) + '&part_type=in.(part,oil)&select=part_code,part_type,qty', function(ok, data) {
+      if (!ok || !data || !data.length) { hideSugg(); return; }
+      var freq={}, types={}, oilQtyMap={};
+      for(var i=0;i<data.length;i++){
+        var pc=data[i].part_code;
+        freq[pc]=(freq[pc]||0)+1;
+        types[pc]=data[i].part_type;
+        if(data[i].part_type==='oil'&&data[i].qty){
+          var q=String(data[i].qty);
+          oilQtyMap[q]=(oilQtyMap[q]||0)+1;
+        }
+      }
+      var codes=[];
+      for(var code in freq){if(freq.hasOwnProperty(code))codes.push(code);}
+      codes.sort(function(a,b){return freq[b]-freq[a];});
+      if(codes.length>6)codes=codes.slice(0,6);
+      if(!codes.length){hideSugg();return;}
+      var h='';
+      for(var j=0;j<codes.length;j++){
+        var c=codes[j], isOil=(types[c]==='oil');
+        if(isOil){
+          var bestQty=0,bestCnt=0;
+          for(var q in oilQtyMap){if(oilQtyMap.hasOwnProperty(q)&&oilQtyMap[q]>bestCnt){bestCnt=oilQtyMap[q];bestQty=parseFloat(q);}}
+          if(!bestQty)bestQty=6;
+          h+='<div class="sugg-row" style="background:rgba(255,159,10,0.05);">'
+            +'<div class="sugg-code" style="color:var(--orange);">\ud83d\udee2 OIL</div>'
+            +'<div class="sugg-cnt" style="background:rgba(255,159,10,0.12);color:var(--orange);border-color:rgba(255,159,10,0.2);">&times; '+freq[c]+'</div>'
+            +'<button class="sugg-add" style="background:var(--orange);" data-qty="'+bestQty+'" onclick="addSuggestedOil(parseFloat(this.getAttribute(\'data-qty\')))">+ '+bestQty+' qts</button>'
+            +'</div>';
+        } else {
+          h+='<div class="sugg-row">'
+            +'<div class="sugg-code">'+esc(c)+'</div>'
+            +'<div class="sugg-cnt">&times; '+freq[c]+'</div>'
+            +'<button class="sugg-add" data-code="'+esc(c)+'" onclick="addSuggested(this.getAttribute(\'data-code\'))">+ Add</button>'
+            +'</div>';
+        }
+      }
+      document.getElementById('suggList').innerHTML=h;
+      document.getElementById('suggWrap').style.display='block';
+    });
+  }, 600);
+}
+function hideSugg() { document.getElementById('suggWrap').style.display='none'; document.getElementById('suggList').innerHTML=''; }
+function addSuggested(code) {
+  var idx=findPart(code);
+  if(idx>=0){parts[idx].qty++;showFb('manFb','ok',code+' qty \u2192 '+parts[idx].qty);}
+  else{parts.push({code:code,qty:1,src:'suggested'});showFb('scanFb','ok',code+' added from history');}
+  renderParts();step3Check();
+}
+function addSuggestedOil(qty) {
+  pendingOil=qty||6;
+  showFb('scanFb','ok','\ud83d\udee2 '+pendingOil+' qts Oil / ATF added');
+  var ind=document.getElementById('oilIndicator'),txt=document.getElementById('oilIndicatorTxt');
+  if(txt)txt.textContent='\ud83d\udee2 '+pendingOil+' qts Oil / ATF \u2014 will be saved with parts';
+  if(ind)ind.style.display='flex';
+  step3Check();
+}
+function clearPendingOil() {
+  pendingOil=0;
+  var ind=document.getElementById('oilIndicator');if(ind)ind.style.display='none';
+  step3Check();
+}
+
+// ═══════════════════════════════════════════════════
+//  DUPLICATE CHECK
+// ═══════════════════════════════════════════════════
+function checkDuplicate(asset) {
+  sbGet('/rest/v1/parts_log?asset_key=eq.'+encodeURIComponent(asset.toLowerCase())+'&posted_to_faster=eq.false&archived=eq.false&select=part_code',function(ok,data){
+    var warn=document.getElementById('dupWarn');if(!warn)return;
+    if(!ok||!data||!data.length){warn.style.display='none';return;}
+    var pc=0,hasOil=false;
+    for(var i=0;i<data.length;i++){if(data[i].part_code==='OIL')hasOil=true;else pc++;}
+    var summary=pc+' part'+(pc!==1?'s':'')+(hasOil?' + oil':'');
+    document.getElementById('dupWarnTtl').textContent='\u26a0\ufe0f '+asset+' already has '+summary+' pending';
+    document.getElementById('dupWarnSub').textContent='Parts are in Active report awaiting FASTER. You can still add more below.';
+    warn.style.display='block';
+  });
+}
+function hideDupWarn(){var w=document.getElementById('dupWarn');if(w)w.style.display='none';}
+
+// ═══════════════════════════════════════════════════
+//  CAMERA / SCANNER
+// ═══════════════════════════════════════════════════
+function toggleScan(){if(scanning)stopScan();else startScan();}
+function startScan(){
+  if(typeof Html5Qrcode==='undefined'){showFb('scanFb','err','Scanner not available \u2014 check connection');return;}
+  document.getElementById('camWrap').classList.add('on');
+  qrScan=new Html5Qrcode('qrDiv');
+  qrScan.start({facingMode:'environment'},
+    {fps:10,qrbox:function(w,h){return{width:Math.floor(w*.88),height:Math.floor(h*.28)};},aspectRatio:2.0,
+     experimentalFeatures:{useBarCodeDetectorIfSupported:true},
+     videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}},
+    function(code){
+      if(scanCool)return; scanCool=true;
+      addScanned(code.trim().toUpperCase());
+      if(navigator.vibrate)navigator.vibrate(80);
+      document.getElementById('camWrap').style.outline='3px solid var(--green)';
+      document.getElementById('camHint').textContent='\u2713 Scanned';
+      setTimeout(function(){
+        document.getElementById('camWrap').style.outline='';
+        try{qrScan.pause(true);}catch(e){}
+        setTimeout(function(){try{qrScan.resume();}catch(e){}document.getElementById('camHint').textContent='Hold FASTER barcode steady';scanCool=false;},800);
+      },350);
+    },function(){}
+  ).then(function(){
+    scanning=true;document.getElementById('scanDot').classList.add('live');
+    document.getElementById('camHint').textContent='Hold FASTER barcode steady in frame';
+  }).catch(function(err){
+    document.getElementById('camWrap').classList.remove('on');qrScan=null;
+    document.getElementById('camHint').textContent=(String(err).indexOf('NotAllowed')>=0)?'Camera permission denied':'Camera unavailable';
+  });
+}
+function stopScan(){
+  if(qrScan){qrScan.stop().then(function(){try{qrScan.clear();}catch(e){}qrScan=null;}).catch(function(){qrScan=null;});}
+  scanning=false;scanCool=false;
+  document.getElementById('camWrap').classList.remove('on');
+  document.getElementById('scanDot').classList.remove('live');
+  document.getElementById('camHint').textContent='';
+}
+
+// ═══════════════════════════════════════════════════
+//  ADD PARTS
+// ═══════════════════════════════════════════════════
+function findPart(code){for(var i=0;i<parts.length;i++)if(parts[i].code===code)return i;return -1;}
+function addScanned(code){
+  if(!code)return;var idx=findPart(code);
+  if(idx>=0){parts[idx].qty++;}else{parts.push({code:code,qty:1,src:'faster'});}
+  renderParts();step3Check();showScanFlash(code);
+}
+function addManual(){
+  var raw=(document.getElementById('manCode').value||'').replace(/\s+/g,'').toUpperCase();
+  var qty=Math.max(1,parseInt(document.getElementById('manQty').value)||1);
+  if(!raw){showFb('manFb','err','Enter a part number');document.getElementById('manCode').focus();return;}
+  if(raw.length<2){showFb('manFb','err','Part number too short');return;}
+  var idx=findPart(raw);
+  if(idx>=0){parts[idx].qty+=qty;showFb('manFb','ok',raw+' qty \u2192 '+parts[idx].qty);}
+  else{parts.push({code:raw,qty:qty,src:'manual'});showFb('manFb','ok',raw+' \u00d7 '+qty+' added');}
+  document.getElementById('manCode').value='';document.getElementById('manQty').value='1';
+  document.getElementById('manCode').focus();renderParts();step3Check();
+}
+function showScanFlash(code){
+  var el=document.getElementById('scanFlash'),cd=document.getElementById('scanFlashCode');
+  if(!el||!cd)return;cd.textContent=code;el.style.display='flex';
+  clearTimeout(el._t);el._t=setTimeout(function(){el.style.display='none';},1200);
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER PARTS LIST
+// ═══════════════════════════════════════════════════
+function renderParts(){
+  var list=document.getElementById('partsList'),empty=document.getElementById('emptyMsg');
+  var badge=document.getElementById('partBadge'),nav=document.getElementById('navCount'),navT=document.getElementById('navCountTxt');
+  if(!list)return;
+  if(!parts.length){list.style.display='none';empty.style.display='block';badge.textContent='';nav.style.display='none';return;}
+  empty.style.display='none';list.style.display='block';
+  var tot=0;for(var i=0;i<parts.length;i++)tot+=parts[i].qty;
+  badge.textContent=parts.length+' SKU \u00b7 '+tot;
+  nav.style.display='block';navT.textContent=parts.length+' part'+(parts.length!==1?'s':'')+' \u00b7 '+tot;
+  // Compact table — saves vertical space vs individual rows
+  var h='<table style="width:100%;border-collapse:collapse;">'
+    +'<thead><tr style="background:var(--navy);">'
+    +'<th style="text-align:left;padding:7px 14px;font-size:10px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.8px;">Part Number</th>'
+    +'<th style="text-align:center;padding:7px 6px;font-size:10px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.8px;">Qty</th>'
+    +'<th style="width:40px;"></th>'
+    +'</tr></thead><tbody>';
+  for(var j=0;j<parts.length;j++){
+    var p=parts[j];
+    var srcColor=p.src==='faster'?'var(--orange)':p.src==='suggested'?'var(--green2)':'var(--blue)';
+    var bg=j%2===0?'#fff':'var(--card2)';
+    h+='<tr style="background:'+bg+';border-bottom:1px solid var(--line2);">'
+      +'<td style="padding:8px 14px;vertical-align:middle;">'
+      +'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+srcColor+';margin-right:8px;vertical-align:middle;"></span>'
+      +'<span style="font-family:\'SF Mono\',monospace;font-size:14px;font-weight:700;color:var(--text);">'+esc(p.code)+'</span>'
+      +'</td>'
+      +'<td style="text-align:center;padding:4px 6px;vertical-align:middle;">'
+      +'<div style="display:inline-flex;align-items:center;background:var(--gray);border-radius:7px;border:1px solid var(--gray2);">'
+      +'<button data-idx="'+j+'" onclick="chQ(parseInt(this.getAttribute(\'data-idx\')),-1)" style="min-width:32px;min-height:32px;border:none;background:none;font-size:16px;cursor:pointer;color:var(--red);font-family:inherit;padding:0;line-height:1;">-</button>'
+      +'<span style="font-size:14px;font-weight:800;min-width:20px;text-align:center;color:var(--text);">'+p.qty+'</span>'
+      +'<button data-idx="'+j+'" onclick="chQ(parseInt(this.getAttribute(\'data-idx\')),1)" style="min-width:32px;min-height:32px;border:none;background:none;font-size:16px;cursor:pointer;color:var(--red);font-family:inherit;padding:0;line-height:1;">+</button>'
+      +'</div>'
+      +'</td>'
+      +'<td style="text-align:center;padding:4px 2px;vertical-align:middle;">'
+      +'<button data-idx="'+j+'" onclick="delP(parseInt(this.getAttribute(\'data-idx\')))" style="min-width:40px;min-height:40px;background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;line-height:1;">\u00d7</button>'
+      +'</td>'
+      +'</tr>';
+  }
+  h+='</tbody></table>';
+  list.innerHTML=h;
+}
+function chQ(i,d){if(i<0||i>=parts.length)return;parts[i].qty=Math.max(1,parts[i].qty+d);renderParts();step3Check();}
+function delP(i){if(i<0||i>=parts.length)return;parts.splice(i,1);renderParts();step3Check();}
+function stepVal(id,delta){
+  var el=document.getElementById(id);if(!el)return;
+  var val=parseFloat(el.value)||0,min=parseFloat(el.getAttribute('min'))||0;
+  el.value=Math.max(min,Math.round((val+delta)*10)/10);
+}
+function step3Check(){
+  var asset=(document.getElementById('assetId').value||'').trim();
+  var notes=(document.getElementById('notesField').value||'').trim();
+  var ok=asset.length>0&&(parts.length>0||notes.length>0||pendingOil>0);
+  var btn=document.getElementById('saveBtn');if(btn)btn.disabled=!ok;
+}
+function showFb(id,type,msg){
+  var el=document.getElementById(id);if(!el)return;
+  if(!type){el.className='fb';el.style.display='none';return;}
+  el.className='fb '+type;el.textContent=(type==='ok'?'\u2713 ':'\u2715 ')+msg;
+  clearTimeout(el._t);el._t=setTimeout(function(){el.className='fb';el.style.display='none';},3000);
+}
+
+// ═══════════════════════════════════════════════════
+//  OIL PROMPT FLOW
+// ═══════════════════════════════════════════════════
+var pendingOil=0;
+function showSheet(){
+  var oilAlreadySet=pendingOil>0, oilInParts=findPart('OIL')>=0;
+  if(parts.length>0&&!oilAlreadySet&&!oilInParts){
+    document.getElementById('oilCustom').value='';
+    document.getElementById('oilSheet').classList.add('on');
+  } else { openSaveSheet(); }
+}
+function setOil(qty){pendingOil=qty;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();}
+function setOilCustom(){
+  var v=parseFloat(document.getElementById('oilCustom').value)||0;
+  if(v<=0){document.getElementById('oilCustom').focus();return;}
+  pendingOil=v;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();
+}
+function skipOil(){pendingOil=0;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();}
+
+function openSaveSheet(){
+  var asset=(document.getElementById('assetId').value||'').trim();
+  var notes=(document.getElementById('notesField').value||'').trim();
+  document.getElementById('sheetAsset').textContent=asset;
+  document.getElementById('sheetTech').textContent=session.user?session.user.name+' ['+session.user.emp_id+']':'';
+  var rows='',tot=0;
+  for(var i=0;i<parts.length;i++){
+    rows+='<div class="row"><div style="flex:1;font-family:monospace;font-size:15px;font-weight:700;color:var(--W);">'+esc(parts[i].code)+'</div>'
+      +'<div style="font-size:16px;font-weight:900;color:var(--R);">'+parts[i].qty+'</div></div>';
+    tot+=parts[i].qty;
+  }
+  if(pendingOil>0)rows+='<div class="row"><div style="flex:1;font-size:15px;color:var(--orange);font-weight:600;">\ud83d\udee2 Oil / ATF</div><div style="font-size:16px;font-weight:900;color:var(--orange);">'+pendingOil+' qts</div></div>';
+  if(notes)rows+='<div class="row"><div style="font-size:13px;color:var(--W2);">\u2753 Unknown part: '+esc(notes)+'</div></div>';
+  document.getElementById('sheetRows').innerHTML=rows;
+  document.getElementById('sheetTotal').textContent=tot+' part'+(tot!==1?'s':'')+(pendingOil>0?' + '+pendingOil+' qts oil':'')+(tot===0&&!pendingOil?'\u2753 Unknown part \u2014 flagged for review':'');
+  document.getElementById('saveSheet').classList.add('on');
+}
+function closeSheet(){
+  document.getElementById('saveSheet').classList.remove('on');
+  document.getElementById('oilSheet').classList.remove('on');
+}
+
+// ═══════════════════════════════════════════════════
+//  FINAL SAVE
+//  AUTOMATION COMPATIBILITY:
+//  - parts/oil rows: posted_to_faster=false -> automation picks up, posts, marks true
+//  - unknown parts:  posted_to_faster=true, post_error set -> automation ignores,
+//                    appears in Failed tab immediately for admin review
+// ═══════════════════════════════════════════════════
+var isSaving=false;
+function finalSave(){
+  if(isSaving)return; isSaving=true;
+  var asset=(document.getElementById('assetId').value||'').trim();
+  var notes=(document.getElementById('notesField').value||'').trim();
+  var oil=pendingOil, ts=new Date().toISOString();
+  var techName=session.user?session.user.name:'', techId=session.user?session.user.emp_id:'';
+  var btn=document.getElementById('confirmBtn');
+  btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
+
+  var rows=[];
+  for(var i=0;i<parts.length;i++){
+    rows.push({asset:asset,asset_key:asset.toLowerCase(),part_code:parts[i].code,part_type:'part',
+      qty:parts[i].qty,tech:techName,tech_emp_id:techId,logged_at:ts,src:parts[i].src,
+      posted_to_faster:false,archived:false,notes:notes,post_error:''});
+  }
+  if(oil>0){
+    rows.push({asset:asset,asset_key:asset.toLowerCase(),part_code:'OIL',part_type:'oil',
+      qty:oil,tech:techName,tech_emp_id:techId,logged_at:ts,src:'manual',
+      posted_to_faster:false,archived:false,notes:notes,post_error:''});
+  }
+  // Unknown part — no part number available
+  // posted_to_faster=true so automation skips it
+  // post_error set so it appears in Failed tab immediately
+  if(!rows.length&&notes){
+    rows.push({asset:asset,asset_key:asset.toLowerCase(),part_code:'UNKNOWN',part_type:'note',
+      qty:0,tech:techName,tech_emp_id:techId,logged_at:ts,src:'manual',
+      posted_to_faster:true,archived:false,notes:notes,
+      post_error:'Unknown part \u2014 no part number. Requires manual identification and entry in FASTER.'});
+  }
+  if(!rows.length){btn.innerHTML='Save to Log';btn.disabled=false;isSaving=false;closeSheet();return;}
+
+  var done=0,errors=0,errDetail='';
+  function onRowDone(ok,detail){
+    if(!ok){errors++;errDetail=String(detail).slice(0,300);}
+    done++;if(done<rows.length)return;
+    btn.innerHTML='Save to Log';btn.disabled=false;isSaving=false;closeSheet();
+    if(errors>0){alert('Save failed:\n\n'+errDetail+'\n\nCheck Supabase SQL setup and RLS settings.');return;}
+    stopScan();saveRecentAsset(asset);pendingOil=0;
+    var pCount=parts.length,uCount=0;
+    for(var i=0;i<parts.length;i++)uCount+=parts[i].qty;
+    var unknownOnly=(pCount===0&&oil===0&&notes);
+    document.getElementById('techForm').style.display='none';
+    document.getElementById('successView').className='success on';
+    document.getElementById('successMsg').innerHTML=
+      '<div style="font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:6px;">'+esc(asset)+'</div>'
+      +(unknownOnly
+        ? '<span style="color:var(--orange);">\u2753 Unknown part flagged for review</span><br><span style="font-size:12px;color:var(--W3);">Admin will see this in the Failed Uploads tab.</span>'
+        : pCount+' part'+(pCount!==1?'s':'')+' \u00b7 '+uCount+' unit'+(uCount!==1?'s':''))
+      +'<br><span style="font-size:13px;color:var(--W3);">\ud83d\udc77 '+esc(techName)+'</span>'
+      +(oil>0?'<br><span style="color:var(--orange);">\ud83d\udee2 '+oil+' qts Oil / ATF</span>':'');
+    showToast('Saved \u2713');
+  }
+  for(var j=0;j<rows.length;j++){
+    (function(row){sbPost('/rest/v1/parts_log',row,function(ok,detail){onRowDone(ok,detail);});})(rows[j]);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  RESET FORM
+// ═══════════════════════════════════════════════════
+function resetForm(){
+  parts=[];pendingOil=0;
+  var flds=['assetId','manCode','notesField'];
+  for(var i=0;i<flds.length;i++){var el=document.getElementById(flds[i]);if(el)el.value='';}
+  document.getElementById('manQty').value='1';
+  hideSugg();hideDupWarn();renderParts();step3Check();renderRecentAssets();
+  var ind=document.getElementById('oilIndicator');if(ind)ind.style.display='none';
+  document.getElementById('techForm').style.display='block';
+  document.getElementById('successView').className='success';
+  stopScan();
+  setTimeout(function(){var a=document.getElementById('assetId');if(a)a.focus();},200);
+}
+
+// ═══════════════════════════════════════════════════
+//  REPORT
+// ═══════════════════════════════════════════════════
+var allData=[],curView='active';
+function setView(v){
+  curView=v;
+  document.getElementById('vt-active').className=(v==='active')?'vt on':'vt';
+  document.getElementById('vt-history').className=(v==='history')?'vt on':'vt';
+  loadReport();
+}
+function loadReport(){
+  var rc=document.getElementById('reportContent');if(!rc)return;
+  rc.innerHTML='<div class="loading"><div class="loading-spin"></div>Loading\u2026</div>';
+  var df=document.getElementById('filterDate').value;
+  var path='/rest/v1/parts_log?order=logged_at.desc&select=*&limit=500';
+  if(curView==='active') path+='&archived=eq.false&posted_to_faster=eq.false';
+  else                   path+='&or=(posted_to_faster.eq.true,archived.eq.true)';
+  if(df!=='all'){
+    var d=new Date();
+    if(df==='today')d.setHours(0,0,0,0);
+    else if(df==='7'){d.setDate(d.getDate()-7);d.setHours(0,0,0,0);}
+    else{d.setDate(d.getDate()-30);d.setHours(0,0,0,0);}
+    path+='&logged_at=gte.'+d.toISOString();
+  }
+  sbGet(path,function(ok,data,status){
+    if(!ok){
+      rc.innerHTML='<div class="empty"><span class="empty-ico">\u26a0\ufe0f</span>'
+        +'<div class="empty-ttl">Load Failed</div>'
+        +'<div class="empty-sub" style="color:var(--R2);">HTTP '+status+' \u2014 check Supabase setup</div>'
+        +'<div style="margin-top:14px;"><button onclick="loadReport()" style="background:var(--R);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Retry</button></div></div>';
+      return;
+    }
+    allData=data||[];filterReport();
+  });
+}
+function filterReport(){
+  var q=((document.getElementById('filterInp').value||'')).toUpperCase().trim();
+  var ft=((document.getElementById('filterTech').value||'')).trim();
+  var d=[];
+  for(var i=0;i<allData.length;i++){
+    var r=allData[i];
+    var qOk=!q||(r.asset||'').toUpperCase().indexOf(q)>=0||(r.part_code||'').toUpperCase().indexOf(q)>=0;
+    var tOk=!ft||(r.tech||'').toLowerCase()===ft.toLowerCase();
+    if(qOk&&tOk)d.push(r);
+  }
+  renderReport(d);
+}
+function renderReport(data){
+  var el=document.getElementById('reportContent');if(!el)return;
+  if(!data||!data.length){
+    el.innerHTML='<div class="empty"><span class="empty-ico">\ud83d\udccb</span>'
+      +'<div class="empty-ttl">'+(curView==='active'?'All Clear':'No History')+'</div>'
+      +'<div class="empty-sub">'+(curView==='active'?'No pending parts \u2014 all posted to FASTER.':'No history for selected period.')+'</div></div>';
+    return;
+  }
+  var groups={},order=[];
+  for(var i=0;i<data.length;i++){
+    var r=data[i],k=(r.asset_key||(r.asset||'unknown').toLowerCase());
+    if(!groups[k]){groups[k]={asset:r.asset||k,tech:r.tech||'',empId:r.tech_emp_id||'',rows:[],key:k};order.push(k);}
+    groups[k].rows.push(r);
+  }
+  order.sort(function(a,b){
+    var da=groups[a].rows[0].logged_at||'',db=groups[b].rows[0].logged_at||'';
+    return db>da?1:-1;
+  });
+  var html='';
+  for(var g=0;g<order.length;g++)html+=buildAssetCard(order[g],groups[order[g]]);
+  el.innerHTML=html;
+  setTimeout(function(){genBarcodes(groups,order,0);},150);
+}
+
+function buildAssetCard(assetKey,g){
+  var rows=g.rows,pItems=[],oilRow=null;
+  for(var i=0;i<rows.length;i++){
+    if(rows[i].part_type==='part')pItems.push(rows[i]);
+    if(rows[i].part_type==='oil'&&!oilRow)oilRow=rows[i];
+  }
+  var tot=0;for(var i=0;i<pItems.length;i++)tot+=pItems[i].qty;
+  var allPosted=true;
+  for(var i=0;i<rows.length;i++){if(!rows[i].posted_to_faster&&rows[i].part_type!=='note'){allPosted=false;break;}}
+  var sk=assetKey.replace(/"/g,''),sa=(g.asset||'').replace(/"/g,'');
+  var dt=rows[0].logged_at?new Date(rows[0].logged_at):null;
+  var dts=dt?dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' \u00b7 '+dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}):'';
+  var entries='';
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i],isOil=(r.part_type==='oil'),isNote=(r.part_type==='note');
+    var bid='bc_'+assetKey.replace(/[^a-z0-9]/gi,'_')+'_'+i;
+    var hasN=r.notes&&r.notes.trim().length>0;
+    entries+='<div class="wo-row">'
+      +(isNote?'<div style="font-size:18px;">\u2753</div>':'<div style="flex-shrink:0;border-radius:4px;overflow:hidden;"><svg id="'+bid+'" style="display:block;"></svg></div>')
+      +'<div style="flex:1;min-width:0;">'
+      +'<div class="wo-part">'+esc(isOil?'OIL':isNote?'Unknown Part':r.part_code)+'</div>'
+      +(hasN?'<div style="font-size:11px;color:var(--text3);margin-top:1px;">'+esc(r.notes.trim())+'</div>':'')
+      +'</div>'
+      +(isNote?'':'<span class="wo-qty">'+r.qty+'</span><span class="wo-unit">'+(isOil?'qts':'pc')+'</span>')
+      +'</div>';
+  }
+  var archBtn=curView==='active'
+    ?'<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askArchive(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--red);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">Archive</button>'
+    :'<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askDelete(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--gray);color:var(--text2);border:1px solid var(--gray2);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;">Delete</button>';
+  return '<div class="wo-card">'
+    +'<div class="wo-hdr" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">'
+    +'<div style="flex:1;min-width:0;">'
+    +'<div class="wo-num">Asset Log</div>'
+    +'<div class="wo-asset">'+esc(g.asset)+'</div>'
+    +'<div class="wo-meta" style="color:rgba(255,255,255,.5);">'+esc(dts)+(g.tech?' \u00b7 \ud83d\udc77 '+esc(g.tech)+(g.empId?' ['+esc(g.empId)+']':''):'')+'</div>'
+    +'</div>'
+    +'<div style="flex-shrink:0;padding-top:2px;">'+archBtn+'</div>'
+    +'</div>'
+    +'<div>'+entries+'</div>'
+    +'<div class="wo-foot">'
+    +'<span class="wo-status '+(allPosted?'posted':'pending')+'">'+(allPosted?'\u2713 Posted to FASTER':'\u23f3 Pending')+'</span>'
+    +'<span style="font-size:11px;color:var(--text3);">'+pItems.length+' SKU \u00b7 '+tot+' units'+(oilRow?' \u00b7 \ud83d\udee2 '+oilRow.qty+'qts':'')+'</span>'
+    +'</div></div>';
+}
+
+function genBarcodes(groups,order,attempt){
+  if(typeof JsBarcode==='undefined'){if(attempt<8)setTimeout(function(){genBarcodes(groups,order,attempt+1);},600);return;}
+  for(var g=0;g<order.length;g++){
+    var rows=groups[order[g]].rows,ak=order[g].replace(/[^a-z0-9]/gi,'_');
+    for(var i=0;i<rows.length;i++){
+      if(rows[i].part_type==='note')continue;
+      var bid='bc_'+ak+'_'+i,el=document.getElementById(bid);if(!el)continue;
+      try{JsBarcode('#'+bid,rows[i].part_code,{format:'CODE128',width:1.6,height:42,displayValue:true,fontSize:9,margin:3,background:'#ffffff',lineColor:'#0a2240'});}
+      catch(e){if(el)el.outerHTML='<span style="font-size:10px;color:var(--R);">'+esc(rows[i].part_code)+'</span>';}
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  FAILED UPLOADS — queries post_error column
+//  Catches both automation failures AND unknown parts
+//  Automation writes post_error via mark_posted(id, False, msg)
+//  Unknown parts have post_error pre-set by the app
+// ═══════════════════════════════════════════════════
+
+// ── Admin panel change password (separate fields from settings page) ──────
+function changePasswordAdmin() {
+  var current  = (document.getElementById('cpCurrentAdmin').value || '');
+  var newPass  = (document.getElementById('cpNewAdmin').value     || '');
+  var confirm2 = (document.getElementById('cpConfirmAdmin').value || '');
+  if (!current)            { showFb('cpFbAdmin','err','Enter your current password'); return; }
+  if (!newPass)            { showFb('cpFbAdmin','err','Enter a new password'); return; }
+  if (newPass.length < 6)  { showFb('cpFbAdmin','err','New password must be at least 6 characters'); return; }
+  if (newPass !== confirm2) { showFb('cpFbAdmin','err','Passwords do not match'); return; }
+  if (!session.user)       { showFb('cpFbAdmin','err','Not logged in'); return; }
+  if (hashPass(current) !== session.user.pass_hash) {
+    showFb('cpFbAdmin','err','Current password is incorrect');
+    document.getElementById('cpCurrentAdmin').value = ''; return;
+  }
+  var newHash = hashPass(newPass);
+  sbPatch('/rest/v1/gl_users?id=eq.' + encodeURIComponent(session.user.id), { pass_hash: newHash }, function(ok) {
+    if (!ok) { showFb('cpFbAdmin','err','Update failed — try again'); return; }
+    session.user.pass_hash = newHash;
+    document.getElementById('cpCurrentAdmin').value='';
+    document.getElementById('cpNewAdmin').value='';
+    document.getElementById('cpConfirmAdmin').value='';
+    showFb('cpFbAdmin','ok','Password updated successfully');
+    showToast('Password updated ✓');
+  });
+}
+
+function checkFailedCount(){
+  sbGet('/rest/v1/parts_log?post_error=neq.&post_error=not.is.null&select=id',function(ok,data){
+    var tab=document.getElementById('atab-failed');if(!tab)return;
+    var count=(ok&&data)?data.length:0;
+    tab.innerHTML=count>0
+      ?'\u26a0\ufe0f Failed <span style="background:var(--R);color:#fff;border-radius:12px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;">'+count+'</span>'
+      :'\u26a0\ufe0f Failed';
+  });
+}
+
+function loadFailed(){
+  var el=document.getElementById('failedContent');if(!el)return;
+  el.innerHTML='<div class="loading"><div class="loading-spin"></div>Loading\u2026</div>';
+  sbGet('/rest/v1/parts_log?post_error=neq.&post_error=not.is.null&order=logged_at.desc&select=*&limit=200',function(ok,data,status){
+    if(!ok){
+      el.innerHTML='<div class="empty"><span class="empty-ico">\u26a0\ufe0f</span>'
+        +'<div class="empty-ttl">Load Failed</div>'
+        +'<div class="empty-sub" style="color:var(--R2);">HTTP '+status+'</div>'
+        +'<div style="margin-top:14px;"><button onclick="loadFailed()" style="background:var(--R);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Retry</button></div></div>';
+      return;
+    }
+    renderFailed(data||[]);
+  });
+}
+
+function renderFailed(data){
+  var el=document.getElementById('failedContent');if(!el)return;
+  if(!data.length){
+    el.innerHTML='<div class="empty"><span class="empty-ico">\u2705</span>'
+      +'<div class="empty-ttl">No Failed Uploads</div>'
+      +'<div class="empty-sub">All parts posted successfully. No unknown parts pending.</div>'
+      +'</div>';
+    return;
+  }
+  var unknownCount=0,failCount=0;
+  for(var i=0;i<data.length;i++){
+    if(data[i].part_code==='UNKNOWN'||data[i].part_type==='note')unknownCount++;
+    else failCount++;
+  }
+  var html='<div style="margin:0 16px 12px;background:var(--Rdim);border:1px solid rgba(229,35,28,.25);border-radius:var(--rad);padding:12px 16px;">'
+    +'<div style="font-size:13px;font-weight:700;color:var(--R2);margin-bottom:4px;">'
+    +(failCount?failCount+' failed upload'+(failCount!==1?'s':''):'')
+    +(failCount&&unknownCount?' &nbsp;&middot;&nbsp; ':'')
+    +(unknownCount?unknownCount+' unknown part'+(unknownCount!==1?'s':''):'')
+    +' \u2014 add these manually to FASTER</div>'
+    +'<div style="font-size:12px;color:var(--W2);line-height:1.5;">Use the asset, part description, and quantity below to manually add each entry in FASTER.</div>'
+    +'</div>';
+
+  for(var i=0;i<data.length;i++){
+    var r=data[i];
+    var isUnknown=(r.part_code==='UNKNOWN'||r.part_type==='note');
+    var isOil=(r.part_type==='oil');
+    var dt=r.logged_at?new Date(r.logged_at):null;
+    var dts=dt?dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' \u00b7 '+dt.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}):'';
+    var errMsg=(r.post_error||'Unknown error').slice(0,200);
+
+    html+='<div class="wo-card" style="border-color:rgba(229,35,28,.25);">'
+      // Header
+      +'<div style="background:linear-gradient(135deg,#6b0000,#4a0000);padding:11px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">'
+      +'<div>'
+      +'<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;">'+(isUnknown?'Unknown Part':'Failed Upload')+'</div>'
+      +'<div style="font-size:17px;font-weight:900;color:#fff;">'+esc(r.asset||'')+'</div>'
+      +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">'+esc(dts)+(r.tech?' \u00b7 \ud83d\udc77 '+esc(r.tech):'')+'</div>'
+      +'</div>'
+      +(isUnknown
+        ?'<div style="background:rgba(255,159,10,.2);border:1px solid rgba(255,159,10,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--orange);white-space:nowrap;">\u2753 Unknown</div>'
+        :'<div style="background:rgba(255,59,48,.25);border:1px solid rgba(255,59,48,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#ff6b6b;white-space:nowrap;">Failed</div>')
+      +'</div>'
+      // Part detail
+      +'<div style="padding:14px 16px;border-bottom:1px solid var(--line2);">'
+      +(isUnknown
+        ? '<div style="font-size:10px;font-weight:700;color:var(--W3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Part Description</div>'
+          +'<div style="font-size:16px;color:var(--W);line-height:1.5;">'+esc(r.notes||'No description provided')+'</div>'
+        : '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">'
+          +'<div><div style="font-size:10px;font-weight:700;color:var(--W3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Part Number</div>'
+          +'<div style="font-family:\'SF Mono\',\'Courier New\',monospace;font-size:20px;font-weight:900;color:var(--W);">'+esc(isOil?'OIL':r.part_code)+'</div></div>'
+          +'<div style="text-align:right;"><div style="font-size:10px;font-weight:700;color:var(--W3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Quantity</div>'
+          +'<div style="font-size:26px;font-weight:900;color:var(--R);">'+r.qty+(isOil?'<span style="font-size:14px;color:var(--W3);margin-left:3px;">qts</span>':'')+'</div></div>'
+          +'</div>'
+          +(r.notes?'<div style="font-size:12px;color:var(--W2);margin-top:8px;">\ud83d\udcdd '+esc(r.notes)+'</div>':''))
+      +'</div>'
+      // Error
+      +'<div style="padding:10px 16px;background:rgba(255,59,48,.06);border-bottom:1px solid var(--line2);">'
+      +'<div style="font-size:10px;font-weight:700;color:var(--W3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">'+(isUnknown?'Action Required':'Error Reason')+'</div>'
+      +'<div style="font-size:12px;color:'+(isUnknown?'var(--orange)':'rgba(255,100,100,.9)')+';line-height:1.5;">'+esc(errMsg)+'</div>'
+      +'</div>'
+      // Footer
+      +'<div class="wo-foot">'
+      +'<span style="font-size:11px;color:var(--W3);">'+esc(dts)+'</span>'
+      +(r.tech_emp_id?'<span style="font-size:11px;color:var(--W3);">EMP: '+esc(r.tech_emp_id)+'</span>':'')
+      +'</div>'
+      +'</div>';
+  }
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+//  ARCHIVE / DELETE
+// ═══════════════════════════════════════════════════
+var archiveKey=null;
+function askArchive(key,name){
+  archiveKey=key;
+  document.getElementById('dlgMsg').textContent='Archive all entries for "'+name+'" and move to History? Nothing is deleted.';
+  document.getElementById('dlgBg').classList.add('on');
+}
+function cancelDlg(){archiveKey=null;document.getElementById('dlgBg').classList.remove('on');}
+function doArchive(){
+  if(!archiveKey)return;var k=archiveKey;cancelDlg();
+  sbPatch('/rest/v1/parts_log?asset_key=eq.'+encodeURIComponent(k)+'&archived=eq.false',
+    {archived:true,posted_to_faster:true,posted_at:new Date().toISOString()},
+    function(ok){if(ok){showToast('Archived \u2713');loadReport();}else showToast('Archive failed');});
+}
+var deleteKey=null;
+function askDelete(key,name){
+  deleteKey=key;
+  document.getElementById('dlgDelMsg').textContent='Delete all history entries for "'+name+'" permanently from the database?';
+  document.getElementById('dlgDelBg').classList.add('on');
+}
+function cancelDelDlg(){deleteKey=null;document.getElementById('dlgDelBg').classList.remove('on');}
+function doDelete(){
+  if(!deleteKey)return;var k=deleteKey;cancelDelDlg();
+  sbDelete('/rest/v1/parts_log?asset_key=eq.'+encodeURIComponent(k),function(ok){
+    if(ok){showToast('Deleted \u2713');loadReport();}else showToast('Delete failed');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  PRINT
+// ═══════════════════════════════════════════════════
+function printAll(){
+  if(!allData||!allData.length){showToast('No data to print');return;}
+  var groups={},order=[];
+  for(var i=0;i<allData.length;i++){
+    var r=allData[i],k=r.asset_key||(r.asset||'unknown').toLowerCase();
+    if(!groups[k]){groups[k]={asset:r.asset||k,tech:r.tech||'',empId:r.tech_emp_id||'',rows:[]};order.push(k);}
+    groups[k].rows.push(r);
+  }
+  var allRows=[];
+  for(var g=0;g<order.length;g++){var grp=groups[order[g]];for(var i=0;i<grp.rows.length;i++)allRows.push({asset:grp.asset,tech:grp.tech,empId:grp.empId,row:grp.rows[i],first:i===0});}
+  var dateStr=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  var win=window.open('','_blank','width=1000,height=750');
+  if(!win){showToast('Pop-up blocked \u2014 allow pop-ups and retry');return;}
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>GoldenLink 2.0 Report<\/title>'
+    +'<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;font-size:10px;background:#fff;color:#000;}'
+    +'.hdr{padding:8px 12px;border-bottom:2px solid #000;display:flex;justify-content:space-between;margin-bottom:4px;}'
+    +'.hdr h1{font-size:15px;font-weight:900;}.sub{font-size:8px;color:#888;}.dt{font-size:9px;color:#444;text-align:right;}'
+    +'table{width:100%;border-collapse:collapse;}thead tr{background:#1c1c1e;color:#fff;}'
+    +'thead th{padding:4px 6px;font-size:8px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;text-align:left;white-space:nowrap;}'
+    +'tr.ah td{background:#f5f5f5;border-top:2px solid #e5231c;padding:5px 6px;}'
+    +'.wa{font-size:12px;font-weight:900;}.wm{font-size:9px;color:#888;}'
+    +'tr.pr{border-bottom:.5px solid #eee;page-break-inside:avoid;}'
+    +'tr.pr:nth-child(even){background:#fafafa;}td{padding:3px 6px;vertical-align:middle;}'
+    +'td.pc{font-family:"Courier New",monospace;font-size:11px;font-weight:700;}'
+    +'td.qc{font-weight:900;font-size:12px;color:#e5231c;text-align:center;}'
+    +'td.sm{font-size:8px;color:#888;}td.bc{width:130px;padding:2px 4px;}td.bc svg{display:block;}'
+    +'.ftr{margin-top:6px;padding-top:5px;border-top:1px solid #ddd;font-size:8px;color:#aaa;text-align:center;}'
+    +'@page{margin:8mm;size:letter portrait;}<\/style><\/head><body>'
+    +'<div class="hdr"><div><h1>GoldenLink 2.0 \u2014 Parts Report<\/h1><div class="sub">Virtual Parts Processing \u00b7 Making FASTER Faster<\/div><\/div><div class="dt">'+dateStr+'<\/div><\/div>'
+    +'<table><thead><tr><th>Asset<\/th><th>Part<\/th><th>Qty<\/th><th>Type<\/th><th>Tech<\/th><th>Date\/Time<\/th><th>Notes<\/th><th>Barcode<\/th><\/tr><\/thead><tbody id="tb"><\/tbody><\/table>'
+    +'<div class="ftr">Printed '+new Date().toLocaleString()+' \u00b7 GoldenLink 2.0 \u00b7 Concord Fleet Maintenance<\/div>'
+    +'<script>var rows='+JSON.stringify(allRows)+';var tb=document.getElementById("tb");'
+    +'rows.forEach(function(it,idx){'
+    +'var r=it.row,isO=r.part_type==="oil",isN=r.part_type==="note";'
+    +'var dt=r.logged_at?new Date(r.logged_at):null;'
+    +'var dts=dt?dt.toLocaleDateString("en-US",{month:"short",day:"numeric"})+" "+dt.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):"";'
+    +'if(it.first){var atr=document.createElement("tr");atr.className="ah";'
+    +'atr.innerHTML="<td colspan=\\"7\\"><div class=\\"wa\\">"+it.asset+"<\/div><div class=\\"wm\\">"+it.tech+(it.empId?" ["+it.empId+"]":"")+"<\/div><\/td><td class=\\"bc\\"><svg id=\\"a"+idx+"\\"><\/svg><\/td>";'
+    +'tb.appendChild(atr);}'
+    +'var tr=document.createElement("tr");tr.className="pr";'
+    +'tr.innerHTML="<td><\/td><td class=\\"pc\\">"+(isO?"OIL":isN?"UNKNOWN":r.part_code)+"<\/td>"'
+    +'+"<td class=\\"qc\\">"+r.qty+(isO?" q":"")+"<\/td>"'
+    +'+"<td class=\\"sm\\">"+(isO?"Oil":isN?"Unknown":"Part")+"<\/td>"'
+    +'+"<td class=\\"sm\\">"+it.tech+(it.empId?" ["+it.empId+"]":"")+"<\/td>"'
+    +'+"<td class=\\"sm\\">"+dts+"<\/td>"'
+    +'+"<td class=\\"sm\\">"+(r.notes||"")+"<\/td>"'
+    +'+"<td class=\\"bc\\"><svg id=\\"p"+idx+"\\"><\/svg><\/td>";'
+    +'tb.appendChild(tr);});'
+    +'window.onload=function(){'
+    +'rows.forEach(function(it,idx){'
+    +'if(it.first){try{JsBarcode("#a"+idx,it.asset,{format:"CODE128",width:1.6,height:30,displayValue:true,fontSize:8,margin:2,background:"#f5f5f5",lineColor:"#000"});}catch(e){}}'
+    +'if(it.row.part_type==="note")return;'
+    +'try{JsBarcode("#p"+idx,it.row.part_code,{format:"CODE128",width:1.3,height:26,displayValue:true,fontSize:7,margin:2,background:"#fff",lineColor:"#000"});}catch(e){}'
+    +'});setTimeout(function(){window.print();},900);};'
+    +'<\/script><\/body><\/html>');
+  win.document.close();showToast('Opening print view\u2026');
+}
+
+// ═══════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════
+function showToast(msg){
+  var t=document.getElementById('toast');if(!t)return;
+  t.textContent=msg;t.classList.add('on');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on');},3000);
+}
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ═══════════════════════════════════════════════════
+//  EXTERNAL SCRIPTS
+// ═══════════════════════════════════════════════════
+(function(){
+  function loadScript(a,b){
+    var s=document.createElement('script');s.src=a;
+    s.onerror=function(){var f=document.createElement('script');f.src=b;document.head.appendChild(f);};
+    document.head.appendChild(s);
+  }
+  loadScript('https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js',
+             'https://unpkg.com/jsbarcode@3.11.6/dist/JsBarcode.all.min.js');
+  loadScript('https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js',
+             'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js');
+})();
+
+// ═══════════════════════════════════════════════════
+//  KEYBOARD / GESTURE
+// ═══════════════════════════════════════════════════
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeSheet();cancelDlg();cancelDelDlg();}
+});
+document.getElementById('oilSheet').addEventListener('click',  function(e){if(e.target===this)this.classList.remove('on');});
+document.getElementById('saveSheet').addEventListener('click', function(e){if(e.target===this)closeSheet();});
+document.getElementById('dlgBg').addEventListener('click',     function(e){if(e.target===this)cancelDlg();});
+document.getElementById('dlgDelBg').addEventListener('click',  function(e){if(e.target===this)cancelDelDlg();});
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+onAssetChange();
+step3Check();
+loadSavedCredentials();
+setTimeout(function(){
+  var el=document.getElementById('loginUser');
+  if(el){
+    if(el.value){var p=document.getElementById('loginPass');if(p)p.focus();}
+    else el.focus();
+  }
+},300);
+</script>
+</body>
+</html>
