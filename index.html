@@ -168,7 +168,7 @@ button{touch-action:manipulation;}
 .btn-outline{background:none;border:1.5px solid var(--border);color:var(--text);}
 /* SHEETS */
 .sheet-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190;}
-.sheet-bg.on{display:block;}
+.sheet-bg.on{display:block!important;}
 .sheet{background:var(--card);border-radius:20px 20px 0 0;border-top:1.5px solid rgba(201,150,12,.25);position:fixed;bottom:0;left:0;right:0;z-index:191;padding-bottom:env(safe-area-inset-bottom,20px);transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.94,.6,1);max-height:92vh;overflow-y:auto;}
 .sheet.on{transform:translateY(0);}
 .sheet-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:12px auto 4px;}
@@ -1172,6 +1172,7 @@ function loadSuggestions(asset){
 function hideSugg(){document.getElementById('suggWrap').style.display='none';document.getElementById('suggList').innerHTML='';}
 function addSuggested(code){var idx=findPart(code);if(idx>=0){parts[idx].qty++;showFb('manFb','ok',code+' qty \u2192 '+parts[idx].qty);}else{parts.push({code:code,qty:1,src:'suggested'});showFb('scanFb','ok',code+' added');}renderParts();step3Check();}
 function addSuggestedOil(qty){
+  if(pendingOil>0){showFb('scanFb','err','Oil already set ('+pendingOil+' qts). Tap the oil indicator to remove it first.');return;}
   if(findPart('OIL')>=0){showFb('scanFb','err','OIL is already in your parts list. Remove it first.');return;}
   pendingOil=qty||6;
   showFb('scanFb','ok','\ud83d\udee2 '+pendingOil+' qts added');
@@ -1351,19 +1352,19 @@ function step3Check(){
   var s2=document.getElementById('step2');
   if(s2){s2.style.opacity=asset.length>0?'1':'.45';s2.style.pointerEvents=asset.length>0?'all':'none';}
 }
-function showFb(id,type,msg){var el=document.getElementById(id);if(!el)return;if(!type){el.className='fb';el.style.display='none';return;}el.className='fb '+type;el.textContent=(type==='ok'?'\u2713 ':'\u2715 ')+msg;clearTimeout(el._t);el._t=setTimeout(function(){el.className='fb';el.style.display='none';},3000);}
+function showFb(id,type,msg){var el=document.getElementById(id);if(!el)return;if(!type){el.className='fb';el.style.display='none';return;}el.className='fb '+type;el.style.display='block';el.textContent=(type==='ok'?'\u2713 ':'\u2715 ')+msg;clearTimeout(el._t);el._t=setTimeout(function(){el.className='fb';el.style.display='none';},3000);}
 
 // ════ OIL SHEET ════
 var pendingOil=0;
 function showSheet(){
   var oilSet=pendingOil>0,oilInParts=findPart('OIL')>=0;
   if(oilSet&&oilInParts){if(!confirm('Oil is set twice: OIL in parts list AND '+pendingOil+' qts via prompt. Remove one to avoid double-charging. Continue anyway?'))return;}
-  if(parts.length>0&&!oilSet&&!oilInParts){document.getElementById('oilCustom').value='';document.getElementById('oilSheet').classList.add('on');}
+  if(parts.length>0&&!oilSet&&!oilInParts){document.getElementById('oilCustom').value='';var os=document.getElementById('oilSheet');os.style.display='block';os.classList.add('on');}
   else openSaveSheet();
 }
-function setOil(qty){pendingOil=qty;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();}
-function setOilCustom(){var v=parseFloat(document.getElementById('oilCustom').value)||0;if(v<=0){document.getElementById('oilCustom').focus();return;}pendingOil=v;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();}
-function skipOil(){pendingOil=0;document.getElementById('oilSheet').classList.remove('on');openSaveSheet();}
+function setOil(qty){pendingOil=qty;var os=document.getElementById('oilSheet');os.classList.remove('on');os.style.display='none';openSaveSheet();}
+function setOilCustom(){var v=parseFloat(document.getElementById('oilCustom').value)||0;if(v<=0){document.getElementById('oilCustom').focus();return;}pendingOil=v;var os=document.getElementById('oilSheet');os.classList.remove('on');os.style.display='none';openSaveSheet();}
+function skipOil(){pendingOil=0;var os=document.getElementById('oilSheet');os.classList.remove('on');os.style.display='none';openSaveSheet();}
 function openSaveSheet(){
   var asset=(document.getElementById('assetId').value||'').trim();
   var notes='';
@@ -1383,9 +1384,13 @@ function openSaveSheet(){
   var oilLabel=pendingOil>0?(pendingOil+' qts oil'):'';
   var divider=(tot>0&&pendingOil>0)?' + ':'';
   document.getElementById('sheetTotal').textContent=(totalLabel+divider+oilLabel)||(tot===0&&!pendingOil?'\u2753 Unknown part \u2014 for review':'');
-  document.getElementById('saveSheet').classList.add('on');
+  var ss=document.getElementById('saveSheet');ss.style.display='block';ss.classList.add('on');
 }
-function closeSheet(){document.getElementById('saveSheet').classList.remove('on');document.getElementById('oilSheet').classList.remove('on');}
+function closeSheet(){
+  var ss=document.getElementById('saveSheet'),os=document.getElementById('oilSheet');
+  ss.classList.remove('on');os.classList.remove('on');
+  setTimeout(function(){ss.style.display='none';os.style.display='none';},320);
+}
 
 // ════ FINAL SAVE — automation compatible ════
 var isSaving=false;
@@ -1768,7 +1773,7 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // ════ EVENT LISTENERS ════
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSheet();cancelDlg();cancelDelDlg();closeHistorySheet();}});
-document.getElementById('oilSheet').addEventListener('click',function(e){if(e.target===this)this.classList.remove('on');});
+document.getElementById('oilSheet').addEventListener('click',function(e){if(e.target===this){this.classList.remove('on');var _os=this;setTimeout(function(){_os.style.display='none';},320);}});
 document.getElementById('saveSheet').addEventListener('click',function(e){if(e.target===this)closeSheet();});
 document.getElementById('dlgBg').addEventListener('click',function(e){if(e.target===this)cancelDlg();});
 document.getElementById('dlgDelBg').addEventListener('click',function(e){if(e.target===this)cancelDelDlg();});
@@ -2167,7 +2172,7 @@ function loadMyReport(){
       html+='<div class="wo-card">'+
         '<div class="wo-hdr"><div style="flex:1;">'+
         '<div class="wo-num">Asset Log</div>'+
-        '<div class="wo-asset" onclick="openAssetHistory(\''+esc(grp.key)+'\'\',\''+esc(grp.asset)+'\')">'+ esc(grp.asset)+'</div>'+
+        '<div class="wo-asset" onclick="openAssetHistory(\''+esc(grp.key)+'\',\''+esc(grp.asset)+'\')">'+ esc(grp.asset)+'</div>'+
         '<div class="wo-meta">'+esc(dts)+'</div>'+
         '</div></div>'+
         '<div>'+entries+'</div>'+
