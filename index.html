@@ -204,13 +204,13 @@ button{touch-action:manipulation;}
 .toast{position:fixed;bottom:calc(var(--safe-b)+74px);left:50%;transform:translateX(-50%) translateY(120px);background:#0a0a0a;color:var(--gold);padding:12px 22px;border-radius:40px;font-size:14px;font-weight:800;letter-spacing:.4px;z-index:999;transition:transform .32s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:88vw;text-align:center;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 0 1px rgba(201,150,12,.2);border:1px solid rgba(201,150,12,.15);}
 .toast.on{transform:translateX(-50%) translateY(0);}
 /* CAMERA */
-.cam-wrap{display:none;background:#000;border-radius:0 0 var(--rad) var(--rad);overflow:hidden;position:relative;width:100%;}
+.cam-wrap{display:none;background:#000;border-radius:0 0 var(--rad) var(--rad);position:relative;width:100%;overflow:hidden;}
 .cam-wrap.on{display:block;}
-.cam-wrap #qrDiv{width:100%;height:260px;position:relative;overflow:hidden;}
-.cam-wrap #qrDiv>div{width:100%!important;height:100%!important;}
-.cam-wrap #qrDiv video{width:100%!important;height:100%!important;object-fit:cover!important;position:absolute;top:0;left:0;}
-@media(orientation:landscape){.cam-wrap{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;border-radius:0!important;}.cam-wrap #qrDiv{height:100vh!important;}.cam-wrap .cam-viewfinder{width:38vh;height:38vh;top:50%;transform:translate(-50%,-50%);}}
-.cam-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:100px;pointer-events:none;z-index:10;}
+#qrDiv{width:100%;height:280px;position:relative;}
+#qrDiv video{position:absolute;top:0;left:0;width:100%!important;height:100%!important;object-fit:cover;}
+#qrDiv canvas.drawingBuffer{position:absolute;top:0;left:0;width:100%!important;height:100%!important;opacity:0;}
+@media(orientation:landscape){.cam-wrap{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;border-radius:0!important;}#qrDiv{height:100vh!important;}.cam-wrap .cam-viewfinder{width:55vw;height:120px;}}
+.cam-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;max-width:320px;height:110px;pointer-events:none;z-index:10;}
 .cam-vf-corner{position:absolute;width:28px;height:28px;border-color:var(--gold);border-style:solid;border-width:0;}
 .cam-vf-tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-top-left-radius:4px;}
 .cam-vf-tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-top-right-radius:4px;}
@@ -1098,7 +1098,7 @@ function resetAdminToggle(){
 }
 
 // ════ TECH STATE ════
-var parts=[],qrScan=null,scanning=false,scanCool=false;
+var parts=[],scanning=false,scanCool=false;
 
 // ════ RECENT ASSETS ════
 function getRecentAssets(){if(!session.user)return[];try{return JSON.parse(localStorage.getItem('gl2_recent_'+session.user.id)||'[]');}catch(e){return[];}}
@@ -1204,72 +1204,104 @@ function hideDupWarn(){var w=document.getElementById('dupWarn');if(w)w.style.dis
 
 // ════ CAMERA / SCANNER ════
 function toggleScan(){if(scanning)stopScan();else startScan();}
+var _quaggaRunning=false;
 function startScan(){
-  if(typeof Html5Qrcode==='undefined'){showFb('scanFb','err','Scanner not available');return;}
+  if(typeof Quagga==='undefined'){
+    showFb('scanFb','err','Scanner library not loaded — try reloading the page');
+    return;
+  }
   var camWrap=document.getElementById('camWrap');
   camWrap.classList.add('on');
-  qrScan=new Html5Qrcode('qrDiv',{verbose:false});
-  // Use a fixed-size scan box that works reliably for CODE128 barcodes on all devices.
-  // Avoid aspectRatio / videoConstraints conflicts — let the browser choose the best stream.
-  var config={fps:15,qrbox:{width:280,height:100}};
-  // Limit to 1D barcode formats for speed — only if the enum is available (v2.3.8+)
-  try{
-    if(typeof Html5QrcodeSupportedFormats!=='undefined'){
-      config.formatsToSupport=[
-        Html5QrcodeSupportedFormats.CODE_128,
-        Html5QrcodeSupportedFormats.CODE_39,
-        Html5QrcodeSupportedFormats.EAN_13,
-        Html5QrcodeSupportedFormats.UPC_A,
-        Html5QrcodeSupportedFormats.QR_CODE
-      ];
-    }
-  }catch(e){}
-  qrScan.start(
-    {facingMode:'environment'},
-    config,
-    function(code){
-      if(scanCool)return;scanCool=true;
-      addScanned(code.trim().toUpperCase());
-      if(navigator.vibrate)navigator.vibrate(80);
-      camWrap.style.outline='3px solid var(--green2)';
-      document.getElementById('camHint').textContent='\u2713 Scanned!';
-      setTimeout(function(){
-        camWrap.style.outline='';
-        try{qrScan.pause(true);}catch(e){}
-        setTimeout(function(){
-          try{qrScan.resume();}catch(e){}
-          document.getElementById('camHint').textContent='Hold barcode steady in the frame';
-          scanCool=false;
-        },800);
-      },350);
+  document.getElementById('camHint').textContent='Starting camera…';
+
+  // Clear any previous Quagga instance
+  try{Quagga.stop();}catch(e){}
+  _quaggaRunning=false;
+
+  Quagga.init({
+    inputStream:{
+      name:'Live',
+      type:'LiveStream',
+      target:document.getElementById('qrDiv'),
+      constraints:{
+        facingMode:'environment',
+        width:{min:640,ideal:1280,max:1920},
+        height:{min:480,ideal:720,max:1080}
+      },
+      area:{top:'20%',right:'5%',bottom:'20%',left:'5%'}
     },
-    function(){}  // per-frame error — suppress
-  ).then(function(){
+    locator:{patchSize:'medium',halfSample:true},
+    numOfWorkers:0,
+    frequency:10,
+    decoder:{
+      readers:[
+        'code_128_reader',
+        'code_39_reader',
+        'ean_reader',
+        'upc_reader'
+      ],
+      multiple:false
+    },
+    locate:true
+  },function(err){
+    if(err){
+      camWrap.classList.remove('on');
+      var msg=String(err.message||err||'');
+      var hint='Camera unavailable — use manual entry';
+      if(msg.toLowerCase().indexOf('permission')>=0||msg.toLowerCase().indexOf('notallowed')>=0)
+        hint='Camera permission denied — check browser settings';
+      else if(msg.toLowerCase().indexOf('notfound')>=0||msg.toLowerCase().indexOf('no camera')>=0)
+        hint='No camera found on this device';
+      document.getElementById('camHint').textContent=hint;
+      showFb('scanFb','err',hint);
+      return;
+    }
+    Quagga.start();
+    _quaggaRunning=true;
     scanning=true;
     document.getElementById('scanDot').classList.add('live');
     var _csb=document.getElementById('closeScanBtn');if(_csb)_csb.style.display='block';
-    document.getElementById('camHint').textContent='Hold FASTER barcode steady in frame';
-  }).catch(function(err){
-    camWrap.classList.remove('on');qrScan=null;
-    var msg=String(err||'');
-    if(msg.indexOf('NotAllowed')>=0||msg.indexOf('Permission')>=0){
-      document.getElementById('camHint').textContent='Camera permission denied — check browser settings';
-    } else if(msg.indexOf('NotFound')>=0||msg.indexOf('Requested device')>=0){
-      document.getElementById('camHint').textContent='No camera found on this device';
-    } else {
-      document.getElementById('camHint').textContent='Camera unavailable — try manual entry';
-    }
-    showFb('scanFb','err',document.getElementById('camHint').textContent);
+    document.getElementById('camHint').textContent='Hold barcode steady in the frame';
+  });
+
+  // Debounce: only fire once per 1.5s to avoid double-reads
+  var _lastCode='',_lastTs=0;
+  Quagga.offDetected(); // clear any old listener
+  Quagga.onDetected(function(result){
+    if(!result||!result.codeResult)return;
+    var code=(result.codeResult.code||'').trim().toUpperCase();
+    if(!code||code.length<2)return;
+    var now=Date.now();
+    // Require same code twice in a row OR 1.5s gap to prevent jitter reads
+    if(code===_lastCode&&(now-_lastTs)<1500)return;
+    if(code!==_lastCode&&(now-_lastTs)<400){_lastCode=code;_lastTs=now;return;}
+    _lastCode=code;_lastTs=now;
+
+    if(scanCool)return;
+    scanCool=true;
+    addScanned(code);
+    if(navigator.vibrate)navigator.vibrate(80);
+    var camWrap2=document.getElementById('camWrap');
+    if(camWrap2)camWrap2.style.outline='3px solid #4cd964';
+    document.getElementById('camHint').textContent='✓ Scanned: '+code;
+    setTimeout(function(){
+      if(camWrap2)camWrap2.style.outline='';
+      document.getElementById('camHint').textContent='Hold barcode steady in the frame';
+      scanCool=false;
+    },1200);
   });
 }
 function stopScan(){
-  if(qrScan){qrScan.stop().then(function(){try{qrScan.clear();}catch(e){}qrScan=null;}).catch(function(){qrScan=null;});}
+  try{if(_quaggaRunning){Quagga.offDetected();Quagga.stop();}}catch(e){}
+  _quaggaRunning=false;
   scanning=false;scanCool=false;
   var _csb=document.getElementById('closeScanBtn');if(_csb)_csb.style.display='none';
-  var camWrap=document.getElementById('camWrap');camWrap.classList.remove('on');
+  var camWrap=document.getElementById('camWrap');
+  if(camWrap){camWrap.classList.remove('on');camWrap.style.outline='';}
   document.getElementById('scanDot').classList.remove('live');
   document.getElementById('camHint').textContent='';
-
+  // Clear the qrDiv so Quagga's video element is removed
+  var qd=document.getElementById('qrDiv');if(qd)qd.innerHTML='';
 }
 
 // ════ ADD PARTS ════
@@ -1811,7 +1843,7 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 (function(){
   function loadScript(a,b){var s=document.createElement('script');s.src=a;s.onerror=function(){var f=document.createElement('script');f.src=b;document.head.appendChild(f);};document.head.appendChild(s);}
   loadScript('https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js','https://unpkg.com/jsbarcode@3.11.6/dist/JsBarcode.all.min.js');
-  loadScript('https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js','https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js');
+  loadScript('https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.4.2/dist/quagga.min.js','https://unpkg.com/@ericblade/quagga2@1.4.2/dist/quagga.min.js');
 })();
 
 // ════ EVENT LISTENERS ════
