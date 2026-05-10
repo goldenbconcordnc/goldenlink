@@ -1172,15 +1172,22 @@ function loadSuggestions(asset){
 function hideSugg(){document.getElementById('suggWrap').style.display='none';document.getElementById('suggList').innerHTML='';}
 function addSuggested(code){var idx=findPart(code);if(idx>=0){parts[idx].qty++;showFb('manFb','ok',code+' qty \u2192 '+parts[idx].qty);}else{parts.push({code:code,qty:1,src:'suggested'});showFb('scanFb','ok',code+' added');}renderParts();step3Check();}
 function addSuggestedOil(qty){
-  if(pendingOil>0){showFb('scanFb','err','Oil already set ('+pendingOil+' qts). Tap the oil indicator to remove it first.');return;}
+  if(pendingOil>0){showFb('scanFb','err','Oil already set ('+pendingOil+' qts). Tap Remove to clear it first.');return;}
   if(findPart('OIL')>=0){showFb('scanFb','err','OIL is already in your parts list. Remove it first.');return;}
   pendingOil=qty||6;
   showFb('scanFb','ok','\ud83d\udee2 '+pendingOil+' qts added');
-  var ind=document.getElementById('oilIndicator'),txt=document.getElementById('oilIndicatorTxt');
-  if(txt)txt.textContent='\ud83d\udee2 '+pendingOil+' qts Oil / ATF';
-  if(ind)ind.style.display='flex';step3Check();
+  renderOilIndicator();step3Check();
 }
-function clearPendingOil(){pendingOil=0;var ind=document.getElementById('oilIndicator');if(ind)ind.style.display='none';step3Check();}
+function clearPendingOil(){pendingOil=0;var ind=document.getElementById('oilIndicator');if(ind){ind.style.display='none';ind.innerHTML='';}step3Check();}
+function renderOilIndicator(){
+  var ind=document.getElementById('oilIndicator');if(!ind)return;
+  if(!pendingOil){ind.style.display='none';ind.innerHTML='';return;}
+  ind.setAttribute('style','display:flex;align-items:center;justify-content:space-between;margin:8px 14px 0;background:rgba(255,122,0,.1);border:1.5px solid rgba(255,122,0,.35);border-radius:10px;padding:10px 14px;');
+  ind.innerHTML='<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">\ud83d\udee2</span>'
+    +'<div><div style="font-size:13px;font-weight:800;color:var(--orange);">Oil / ATF Added</div>'
+    +'<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:1px;">'+pendingOil+' qts queued</div></div></div>'
+    +'<button onclick="clearPendingOil()" style="background:rgba(255,122,0,.15);border:1px solid rgba(255,122,0,.3);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:700;color:var(--orange);cursor:pointer;white-space:nowrap;">\u2715 Remove</button>';
+}
 
 // ════ DUPLICATE CHECK ════
 function checkDuplicate(asset){
@@ -1457,7 +1464,7 @@ function resetForm(){
   var flds=['assetId','manCode'];for(var i=0;i<flds.length;i++){var el=document.getElementById(flds[i]);if(el)el.value='';}
   document.getElementById('manQty').value='1';
   hideSugg();hideDupWarn();renderParts();step3Check();renderRecentAssets();renderFavChips();
-  var ind=document.getElementById('oilIndicator');if(ind)ind.style.display='none';
+  renderOilIndicator();
   document.getElementById('techForm').style.display='block';
   document.getElementById('successView').className='success';
   var _fsb=document.getElementById('fixedSaveBar');if(_fsb)_fsb.style.display='none';
@@ -1591,29 +1598,33 @@ function renderFailed(data){
     var rid=esc(r.id);
     html+='<div class="wo-card" style="border-color:rgba(178,34,52,.2);">'
       +'<div style="background:linear-gradient(135deg,#6b0000,#4a0000);padding:11px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:2px solid var(--red);">'
-      +'<div><div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;">'+(isUnknown?'Unknown Part':'Failed Upload')+'</div>'
-      +'<div style="font-size:17px;font-weight:900;color:#fff;">'+esc(r.asset||'')+'</div>'
-      +'<div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;">'+esc(dts)+(r.tech?' \u00b7 \ud83d\udc77 '+esc(r.tech):'')+'</div></div>'
-      +(isUnknown?'<div style="background:rgba(192,112,16,.2);border:1px solid rgba(192,112,16,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--orange);white-space:nowrap;">\u2753 Unknown</div>'
-        :'<div style="background:rgba(255,59,48,.2);border:1px solid rgba(255,59,48,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#ff6b6b;white-space:nowrap;">Failed</div>')
+      +'<div style="flex:1;min-width:0;"><div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">'+(isUnknown?'Unknown Part':'Failed Upload')+' \u2014 Asset #</div>'
+      +'<input id="editAsset_'+rid+'" value="'+esc(r.asset||'')+'" placeholder="Asset number" autocapitalize="characters" autocomplete="off" style="width:100%;font-family:\'SF Mono\',monospace;font-size:17px;font-weight:900;color:#fff;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 10px;outline:none;-webkit-appearance:none;box-sizing:border-box;letter-spacing:.5px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();">'
+      +'<div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px;">'+esc(dts)+(r.tech?' \u00b7 \ud83d\udc77 '+esc(r.tech):'')+'</div></div>'
+      +(isUnknown?'<div style="background:rgba(192,112,16,.2);border:1px solid rgba(192,112,16,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--orange);white-space:nowrap;flex-shrink:0;">\u2753 Unknown</div>'
+        :'<div style="background:rgba(255,59,48,.2);border:1px solid rgba(255,59,48,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#ff6b6b;white-space:nowrap;flex-shrink:0;">Failed</div>')
       +'</div>'
       +'<div style="padding:12px 16px;border-bottom:1px solid var(--line2);">'
       +(isUnknown
         ?'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Description</div>'
          +'<div style="font-size:14px;color:var(--text);line-height:1.5;margin-bottom:10px;background:var(--card2);padding:8px 10px;border-radius:6px;border:1px solid var(--line);">'+esc(r.notes||'No description')+'</div>'
          +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Assign Part Number</div>'
-         +'<input id="editCode_'+rid+'" value="" placeholder="Enter part number from FASTER" style="width:100%;font-family:\'SF Mono\',monospace;font-size:16px;font-weight:700;color:var(--text);border:1.5px solid var(--navy);border-radius:8px;padding:10px 12px;outline:none;-webkit-appearance:none;background:#fff;">'
+         +'<input id="editCode_'+rid+'" value="" placeholder="Enter part number from FASTER" autocapitalize="characters" autocomplete="off" style="width:100%;font-family:\'SF Mono\',monospace;font-size:16px;font-weight:700;color:var(--text);border:1.5px solid rgba(201,150,12,.4);border-radius:8px;padding:10px 12px;outline:none;-webkit-appearance:none;background:rgba(255,255,255,.06);box-sizing:border-box;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();">'
+         +'<div style="display:flex;align-items:center;gap:12px;margin-top:10px;">'
+         +'<div style="flex:1;"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Quantity</div>'
+         +'<input id="editQty_'+rid+'" type="number" value="'+esc(String(r.qty||1))+'" min="1" inputmode="numeric" style="width:100%;font-family:inherit;font-size:16px;font-weight:800;color:var(--text);border:1.5px solid rgba(201,150,12,.4);border-radius:8px;padding:9px 12px;outline:none;-webkit-appearance:none;background:rgba(255,255,255,.06);box-sizing:border-box;"></div></div>'
         :'<div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px;">'
          +'<div style="flex:1;"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Part Number</div>'
-         +'<input id="editCode_'+rid+'" value="'+esc(isOil?'OIL':r.part_code)+'" style="width:100%;font-family:\'SF Mono\',monospace;font-size:18px;font-weight:900;color:var(--text);border:1.5px solid var(--gray2);border-radius:8px;padding:8px 12px;outline:none;-webkit-appearance:none;" placeholder="Part number"></div>'
-         +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Qty</div>'
-         +'<div style="font-size:26px;font-weight:900;color:var(--red);">'+r.qty+(isOil?'<span style="font-size:13px;color:var(--text3);margin-left:3px;">qts</span>':'')+'</div></div></div>'
+         +'<input id="editCode_'+rid+'" value="'+esc(isOil?'OIL':r.part_code)+'" autocapitalize="characters" autocomplete="off" style="width:100%;font-family:\'SF Mono\',monospace;font-size:18px;font-weight:900;color:var(--text);border:1.5px solid rgba(201,150,12,.4);border-radius:8px;padding:8px 12px;outline:none;-webkit-appearance:none;background:rgba(255,255,255,.06);box-sizing:border-box;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();" placeholder="Part number"></div>'
+         +'<div style="flex:0 0 90px;"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Qty'+(isOil?' (qts)':'')+'</div>'
+         +'<input id="editQty_'+rid+'" type="number" value="'+esc(String(r.qty||1))+'" min="1" inputmode="numeric" style="width:100%;font-family:inherit;font-size:18px;font-weight:900;color:var(--red);border:1.5px solid rgba(201,150,12,.4);border-radius:8px;padding:8px 12px;outline:none;-webkit-appearance:none;background:rgba(255,255,255,.06);box-sizing:border-box;"></div>'
+         +'</div></div>'
         )
       +'<div style="background:var(--reddim);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--red);line-height:1.5;">'
       +(isUnknown?'Requires manual identification and entry in FASTER':esc((r.post_error||'').slice(0,200)))+'</div></div>'
       +'<div style="padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line2);">'
-      +'<button data-id="'+rid+'" onclick="saveFailedEdit(this.getAttribute(\'data-id\'))" style="background:var(--navy);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">'+(isUnknown?'Assign Part #':'Save Edit')+'</button>'
-      +'<button data-id="'+rid+'" data-key="'+esc(r.asset_key||'')+'" onclick="failedToReport(this.getAttribute(\'data-id\'),this.getAttribute(\'data-key\'))" style="background:var(--gray);color:var(--navy);border:1px solid var(--gray2);border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">View in Report</button>'
+      +'<button data-id="'+rid+'" onclick="saveFailedEdit(this.getAttribute(\'data-id\'))" style="background:var(--red);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">'+(isUnknown?'Assign &amp; Save':'Save Changes')+'</button>'
+      +'<button data-id="'+rid+'" data-key="'+esc(r.asset_key||'')+'" onclick="failedToReport(this.getAttribute(\'data-id\'),this.getAttribute(\'data-key\'))" style="background:var(--gray);color:var(--text2);border:1px solid var(--gray2);border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">View in Report</button>'
       +'<button data-id="'+rid+'" data-key="'+esc(r.asset_key||'')+'" onclick="archiveFailed(this.getAttribute(\'data-id\'),this.getAttribute(\'data-key\'))" style="background:var(--orange);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Archive</button>'
       +'<button data-id="'+rid+'" onclick="deleteFailed(this.getAttribute(\'data-id\'))" style="background:var(--reddim);color:var(--red);border:1px solid rgba(178,34,52,.2);border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Delete</button>'
       +'</div></div>';
@@ -1624,27 +1635,31 @@ function saveFailedEdit(id){
   var inp=document.getElementById('editCode_'+id);if(!inp){showToast('Input not found');return;}
   var newCode=inp.value.trim().replace(/\s+/g,' ').toUpperCase();
   if(!newCode||newCode.length<2){showToast('Enter a valid part number');inp.focus();return;}
+  var qtyInp=document.getElementById('editQty_'+id);
+  var newQty=qtyInp?Math.max(1,parseInt(qtyInp.value)||1):null;
+  var assetInp=document.getElementById('editAsset_'+id);
+  var newAsset=assetInp?(assetInp.value||'').trim().toUpperCase():'';
   // Fetch full row including asset_key so we can navigate after save
   sbGet('/rest/v1/parts_log?id=eq.'+encodeURIComponent(id)+'&select=part_code,part_type,qty,asset_key,asset',function(ok,data){
     if(!ok||!data||!data.length){showToast('Could not find entry');return;}
     var row=data[0];
     var isUnk=(row.part_code==='UNKNOWN'||row.part_type==='note');
-    var assetKey=(row.asset_key||row.asset||'').toLowerCase();
+    var resolvedAsset=newAsset||row.asset||'';
+    var assetKey=resolvedAsset.toLowerCase()||row.asset_key||'';
     // Reset: clear post_error, set posted_to_faster=false so automation picks it up
     var patch={part_code:newCode,posted_to_faster:false,post_error:''};
-    if(isUnk){patch.part_type='part';if(!row.qty||row.qty<1)patch.qty=1;}
+    if(newQty!==null)patch.qty=newQty;
+    if(resolvedAsset&&resolvedAsset!==row.asset){patch.asset=resolvedAsset;patch.asset_key=assetKey;}
+    if(isUnk){patch.part_type='part';if(!patch.qty||patch.qty<1)patch.qty=1;}
     sbPatch('/rest/v1/parts_log?id=eq.'+encodeURIComponent(id),patch,function(ok2){
       if(!ok2){showToast('Update failed \u2014 try again');return;}
       checkFailedCount();
       showToast((isUnk?'Assigned':'Updated')+' \u2713 \u2014 queued for FASTER');
-      // Navigate to Active report filtered to this asset
-      // so admin can confirm the part is pending and watch for it to post
       setAdmTab('report');
       setView('active');
       var fi=document.getElementById('filterInp');
       if(fi)fi.value=assetKey.toUpperCase();
       filterReport();
-      // Full reload after short delay to ensure Supabase has committed
       setTimeout(function(){loadReport();},1200);
     });
   });
