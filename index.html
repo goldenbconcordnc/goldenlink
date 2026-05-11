@@ -231,6 +231,13 @@ button{touch-action:manipulation;}
 .cam-vf-br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:4px;}
 @keyframes scanLine{0%{top:15%}50%{top:85%}100%{top:15%}}
 .cam-vf-scan{position:absolute;left:6px;right:6px;height:2px;background:linear-gradient(90deg,transparent,rgba(201,150,12,.9),rgba(201,150,12,1),rgba(201,150,12,.9),transparent);animation:scanLine 2s ease-in-out infinite;top:50%;box-shadow:0 0 6px rgba(201,150,12,.5);}
+/* PART ADDED — large in-viewfinder confirmation; blocks the next scan visually for ~1s */
+.scan-confirm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);z-index:45;background:rgba(20,140,60,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:2px solid #4cd964;border-radius:18px;padding:18px 28px;display:none;flex-direction:column;align-items:center;gap:6px;box-shadow:0 12px 40px rgba(0,0,0,.55),0 0 0 6px rgba(76,217,100,.18);opacity:0;pointer-events:none;min-width:200px;max-width:80vw;}
+.scan-confirm.on{display:flex;animation:scanConfirmIn .18s cubic-bezier(.2,1.3,.5,1) forwards;}
+@keyframes scanConfirmIn{from{opacity:0;transform:translate(-50%,-50%) scale(.7);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+.scan-confirm-check{font-size:34px;line-height:1;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+.scan-confirm-ttl{font-size:15px;font-weight:900;color:#fff;letter-spacing:1.5px;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+.scan-confirm-code{font-family:'SF Mono','Courier New',monospace;font-size:13px;font-weight:700;color:rgba(255,255,255,.95);letter-spacing:.5px;background:rgba(0,0,0,.22);padding:4px 10px;border-radius:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 /* SCAN PILL — running count of items scanned this session */
 .scan-pill{position:absolute;top:max(env(safe-area-inset-top,12px),12px);right:12px;z-index:30;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(201,150,12,.45);border-radius:18px;padding:6px 10px 6px 8px;display:flex;align-items:center;gap:8px;cursor:pointer;max-width:min(72vw,360px);transition:max-width .25s ease,padding .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .scan-pill:active{filter:brightness(.85);}
@@ -491,7 +498,7 @@ button{touch-action:manipulation;}
     <div class="scroll">
       <div class="workflow-card">
         <div class="scan-btn-full" onclick="toggleScan()"><div class="scan-btn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="4" height="16" rx="1"/><rect x="7" y="4" width="2" height="16" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="1" height="16" rx="1"/><rect x="17" y="4" width="3" height="16" rx="1"/></svg></div><div class="scan-btn-text"><div class="scan-btn-title">Scan FASTER Barcode</div><div class="scan-btn-sub">Tap to open camera</div></div><div id="scanDot" class="scan-dot"></div></div>
-        <div class="cam-wrap" id="camWrap"><div id="qrDiv"></div><div class="cam-viewfinder"><div class="cam-vf-corner cam-vf-tl"></div><div class="cam-vf-corner cam-vf-tr"></div><div class="cam-vf-corner cam-vf-bl"></div><div class="cam-vf-corner cam-vf-br"></div><div class="cam-vf-scan"></div></div><div id="scanPill" class="scan-pill" onclick="toggleScanPillExpanded(event)" style="display:none;"><div class="scan-pill-count"><span id="scanPillCount">0</span></div><div class="scan-pill-list" id="scanPillList"></div><svg class="scan-pill-chev" id="scanPillChev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6,9 12,15 18,9"/></svg></div><div id="scanDupBanner" class="scan-dup-banner" style="display:none;"><div class="scan-dup-icon">&#9888;&#65039;</div><div class="scan-dup-body"><div class="scan-dup-ttl"><span id="scanDupCode"></span> already added</div><div class="scan-dup-sub" id="scanDupSub">Currently qty 1 \u00b7 skipping in <span id="scanDupCountdown">3</span>s</div></div><button class="scan-dup-add" onclick="confirmDupAdd()">Add Anyway</button></div><button id="closeScanBtn" onclick="stopScan()" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:12px 32px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;z-index:50;">&#10005;&ensp;Close Scanner</button></div>
+        <div class="cam-wrap" id="camWrap"><div id="qrDiv"></div><div class="cam-viewfinder"><div class="cam-vf-corner cam-vf-tl"></div><div class="cam-vf-corner cam-vf-tr"></div><div class="cam-vf-corner cam-vf-bl"></div><div class="cam-vf-corner cam-vf-br"></div><div class="cam-vf-scan"></div></div><div id="scanPill" class="scan-pill" onclick="toggleScanPillExpanded(event)" style="display:none;"><div class="scan-pill-count"><span id="scanPillCount">0</span></div><div class="scan-pill-list" id="scanPillList"></div><svg class="scan-pill-chev" id="scanPillChev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6,9 12,15 18,9"/></svg></div><div id="scanConfirm" class="scan-confirm"><div class="scan-confirm-check">&#10003;</div><div class="scan-confirm-ttl">Part Added</div><div class="scan-confirm-code" id="scanConfirmCode"></div></div><div id="scanDupBanner" class="scan-dup-banner" style="display:none;"><div class="scan-dup-icon">&#9888;&#65039;</div><div class="scan-dup-body"><div class="scan-dup-ttl"><span id="scanDupCode"></span> already added</div><div class="scan-dup-sub" id="scanDupSub">Currently qty 1 \u00b7 skipping in <span id="scanDupCountdown">3</span>s</div></div><button class="scan-dup-add" onclick="confirmDupAdd()">Add Anyway</button></div><button id="closeScanBtn" onclick="stopScan()" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:12px 32px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;z-index:50;">&#10005;&ensp;Close Scanner</button></div>
         <div class="cam-hint" id="camHint"></div>
         <div class="or-divider"><div class="or-divider-line"></div><div class="or-divider-txt">OR</div><div class="or-divider-line"></div></div>
         <div class="manual-section"><div class="manual-label">Enter Part Number</div><input type="text" id="manCode" autocomplete="off" autocapitalize="characters" placeholder="Part number or description..." oninput="onManCodeInput(this.value)" onkeydown="onManCodeKey(event)" onfocus="this.style.borderColor='rgba(201,150,12,.6)';onManCodeInput(this.value);" onblur="setTimeout(hideAutocomplete,150);this.style.borderColor='rgba(255,255,255,.1)';" style="width:100%;font-family:'SF Mono',monospace;font-size:16px;font-weight:600;color:#f0f0f0;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;outline:none;-webkit-appearance:none;letter-spacing:.5px;margin-bottom:10px;display:block;transition:border-color .2s;box-sizing:border-box;"><div class="autocomplete-list" id="autocompleteList"></div><div style="display:flex;gap:10px;align-items:center;"><div class="qty-stepper"><button onclick="stepVal('manQty',-1)">&#8722;</button><input id="manQty" type="number" value="1" min="1" style="width:40px;border:none;outline:none;font-family:inherit;font-size:17px;font-weight:800;color:#fff;background:transparent;text-align:center;-webkit-appearance:none;padding:0;"><button onclick="stepVal('manQty',1)">+</button></div><button onclick="addManual()" class="add-part-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>ADD PART</button></div></div>
@@ -1389,14 +1396,25 @@ function _onBarcodeDetected(result){
   }
   addScanned(code);
   updateScanPill();
-  if(navigator.vibrate){try{navigator.vibrate(80);}catch(e){}}
+  // Show a large, unambiguous "Part Added" overlay inside the viewfinder.
+  // The existing 1.2s scanCool cooldown below already blocks the next scan during this window.
+  var confirmEl=document.getElementById('scanConfirm');
+  var confirmCode=document.getElementById('scanConfirmCode');
+  if(confirmEl&&confirmCode){
+    confirmCode.textContent=code;
+    confirmEl.classList.remove('on');
+    // force reflow so the animation replays if user is firing scans rapidly
+    void confirmEl.offsetWidth;
+    confirmEl.classList.add('on');
+  }
   var camWrap2=document.getElementById('camWrap');
   if(camWrap2)camWrap2.style.outline='3px solid #4cd964';
   var hintEl=document.getElementById('camHint');
-  if(hintEl)hintEl.textContent='\u2713 Scanned: '+code;
+  if(hintEl)hintEl.textContent='\u2713 Part added';
   setTimeout(function(){
     if(camWrap2)camWrap2.style.outline='';
     if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';
+    if(confirmEl)confirmEl.classList.remove('on');
     scanCool=false;
   },1200);
 }
@@ -1446,10 +1464,21 @@ function confirmDupAdd(){
   _clearDupBanner(true);
   addScanned(code);
   updateScanPill();
-  if(navigator.vibrate){try{navigator.vibrate(60);}catch(e){}}
+  // Same visible confirmation as a regular successful scan.
+  var confirmEl=document.getElementById('scanConfirm');
+  var confirmCode=document.getElementById('scanConfirmCode');
+  if(confirmEl&&confirmCode){
+    confirmCode.textContent=code;
+    confirmEl.classList.remove('on');
+    void confirmEl.offsetWidth;
+    confirmEl.classList.add('on');
+  }
   var hintEl=document.getElementById('camHint');
-  if(hintEl&&scanning)hintEl.textContent='\u2713 Added: '+code;
-  setTimeout(function(){if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';},1200);
+  if(hintEl&&scanning)hintEl.textContent='\u2713 Part added';
+  setTimeout(function(){
+    if(confirmEl)confirmEl.classList.remove('on');
+    if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';
+  },1200);
 }
 
 // ──── Viewfinder pill: running count + last 2-3 codes (tap to expand) ────
@@ -1603,6 +1632,8 @@ function stopScan(){
   var qd=document.getElementById('qrDiv');if(qd)qd.innerHTML='';
   var pill=document.getElementById('scanPill');
   if(pill){pill.style.display='none';pill.classList.remove('expanded');}
+  var confirmEl=document.getElementById('scanConfirm');
+  if(confirmEl)confirmEl.classList.remove('on');
 }
 
 // ════ ADD PARTS ════
