@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -204,13 +205,25 @@ button{touch-action:manipulation;}
 .toast{position:fixed;bottom:calc(var(--safe-b)+74px);left:50%;transform:translateX(-50%) translateY(120px);background:#0a0a0a;color:var(--gold);padding:12px 22px;border-radius:40px;font-size:14px;font-weight:800;letter-spacing:.4px;z-index:999;transition:transform .32s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:88vw;text-align:center;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 0 1px rgba(201,150,12,.2);border:1px solid rgba(201,150,12,.15);}
 .toast.on{transform:translateX(-50%) translateY(0);}
 /* CAMERA */
+/* SCANNER — orientation-aware, optimized for 4x1 (Code 128) barcodes */
 .cam-wrap{display:none;background:#000;border-radius:0 0 var(--rad) var(--rad);position:relative;width:100%;overflow:hidden;}
 .cam-wrap.on{display:block;}
-#qrDiv{width:100%;height:280px;position:relative;}
-#qrDiv video{position:absolute;top:0;left:0;width:100%!important;height:100%!important;object-fit:cover;}
-#qrDiv canvas.drawingBuffer{position:absolute;top:0;left:0;width:100%!important;height:100%!important;opacity:0;}
-@media(orientation:landscape){.cam-wrap{position:fixed!important;top:0!important;left:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;border-radius:0!important;}#qrDiv{height:100vh!important;}.cam-wrap .cam-viewfinder{width:55vw;height:120px;}}
-.cam-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;max-width:320px;height:110px;pointer-events:none;z-index:10;}
+#qrDiv{width:100%;height:300px;position:relative;background:#000;overflow:hidden;}
+#qrDiv video,#qrDiv canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important;object-fit:cover;display:block;}
+#qrDiv canvas.drawingBuffer{opacity:0;pointer-events:none;}
+/* Fullscreen mode (toggled on .cam-wrap when scanning, regardless of orientation) */
+.cam-wrap.fs{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;z-index:9999!important;border-radius:0!important;background:#000;}
+.cam-wrap.fs #qrDiv{width:100vw!important;height:100vh!important;height:100dvh!important;}
+/* Portrait viewfinder — tall-ish for vertical hold of 4x1 barcode */
+.cam-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:82%;max-width:340px;height:120px;pointer-events:none;z-index:10;transition:width .25s ease,height .25s ease,max-width .25s ease;}
+/* Landscape viewfinder — wider, shorter to match 4x1 barcode held horizontally */
+@media(orientation:landscape){
+  .cam-wrap.fs .cam-viewfinder{width:62vw;max-width:680px;height:24vh;max-height:180px;}
+}
+/* Phones in portrait at narrow widths — keep frame readable */
+@media(orientation:portrait) and (max-width:480px){
+  .cam-wrap.fs .cam-viewfinder{width:86vw;max-width:380px;height:140px;}
+}
 .cam-vf-corner{position:absolute;width:28px;height:28px;border-color:var(--gold);border-style:solid;border-width:0;}
 .cam-vf-tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-top-left-radius:4px;}
 .cam-vf-tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-top-right-radius:4px;}
@@ -355,7 +368,6 @@ button{touch-action:manipulation;}
 #emptyMsg .empty{padding:24px 20px;}
 .empty-ico{font-size:34px;margin-bottom:10px;opacity:.5;}
 
-
 /* Fav qty sheet open state */
 #favQtySheet.open{transform:translateY(0)!important;}
 #favQtyOverlay.open{display:block!important;}
@@ -363,45 +375,43 @@ button{touch-action:manipulation;}
 #favEditSheet.open{transform:translateY(0)!important;}
 #favEditOverlay.open{display:block!important;}
 
-
 /* ── Tab icons — single clean ruleset ── */
 .tab-svg-wrap{width:22px;height:22px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .tab-svg-wrap svg,.tab-svg{width:22px;height:22px;display:block;fill:none;stroke:rgba(255,255,255,.28);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s,transform .15s;flex-shrink:0;}
-.tab.on .tab-svg-wrap svg,.tab.on .tab-svg{stroke:var(--gold);}
-
+.tab.on .tab-svg-wrap svg,.tab.on .tab-svg{stroke:var(–gold);}
 
 /* ── Tab buttons ── */
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 0 6px;border:none;background:none;cursor:pointer;font-family:inherit;position:relative;min-width:0;-webkit-tap-highlight-color:transparent;}
 .tab:active{background:rgba(201,150,12,.05);}
 
-.tab-bar-ind{position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;border-radius:1px;background:var(--gold);opacity:0;transition:opacity .2s;}
+.tab-bar-ind{position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;border-radius:1px;background:var(–gold);opacity:0;transition:opacity .2s;}
 .tab.on .tab-bar-ind{opacity:1;}
 
 /* Tab SVG exact sizing */
 .tab-svg{width:22px!important;height:22px!important;max-width:22px!important;max-height:22px!important;display:block;fill:none;stroke:rgba(255,255,255,.3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin:0 auto 3px;}
 .tab-svg-wrap svg{width:22px!important;height:22px!important;fill:none;stroke:rgba(255,255,255,.3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.tab.on .tab-svg{stroke:var(--gold)!important;}
-.tab.on .tab-svg-wrap svg{stroke:var(--gold)!important;}
-.tab.on .tab-lbl{color:var(--gold)!important;font-weight:800;}
+.tab.on .tab-svg{stroke:var(–gold)!important;}
+.tab.on .tab-svg-wrap svg{stroke:var(–gold)!important;}
+.tab.on .tab-lbl{color:var(–gold)!important;font-weight:800;}
 .tab.on .tab-bar-ind{opacity:1;}
 .tabbar.on{display:flex!important;}
-
 
 /* Sheet slide-up: parent .on class triggers inner .sheet slide */
 .sheet-bg.on .sheet{transform:translateY(0);}
 /* btn-fill for Cancel buttons in sheets */
-.btn-fill{width:calc(100% - 32px);margin:0 auto;display:block;padding:14px 20px;border:1.5px solid var(--border);border-radius:var(--rad);font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;text-align:center;background:transparent;color:var(--text2);}
+.btn-fill{width:calc(100% - 32px);margin:0 auto;display:block;padding:14px 20px;border:1.5px solid var(–border);border-radius:var(–rad);font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;text-align:center;background:transparent;color:var(–text2);}
 .btn-fill:active{background:rgba(255,255,255,.06);}
 /* Sheet confirmation text colors */
-#sheetAsset{color:var(--gold)!important;letter-spacing:1.5px;}
-#sheetTotal{color:var(--gold)!important;}
-#sheetTech{color:var(--text)!important;}
+#sheetAsset{color:var(–gold)!important;letter-spacing:1.5px;}
+#sheetTotal{color:var(–gold)!important;}
+#sheetTech{color:var(–text)!important;}
 
 </style>
 </head>
 <body>
 
 <!-- ═══════ LOGIN ═══════ -->
+
 <div id="loginPage" class="login-wrap">
   <div class="star-field" id="starField"></div>
   <div class="login-hero">
@@ -445,6 +455,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- ═══════ TECH PAGE ═══════ -->
+
 <div id="techPage" class="page" style="display:none;">
   <div class="nav" id="navTech">
     <div class="nav-brand"><div class="nav-logo">&#127482;&#127480; <span class="nav-logo-brand"><span class="gold-shimmer">Golden</span><span style="color:#fff;">Link</span></span><span class="v3-badge">V3</span></div><div class="nav-sub">The Missing Link to Accurate Inventory</div></div>
@@ -532,6 +543,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- ═══════ ADMIN PAGE ═══════ -->
+
 <div id="adminPage" class="page" style="display:none;flex-direction:column;">
   <div class="nav">
     <div class="nav-brand">
@@ -609,6 +621,7 @@ button{touch-action:manipulation;}
 <!-- TAB BAR -->
 
 <!-- ═══════ MY REPORT PAGE ═══════ -->
+
 <div id="myReportPage" class="page" style="display:none;flex-direction:column;">
   <div class="nav">
     <div class="nav-brand">
@@ -667,6 +680,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- RESET PASSWORD DIALOG -->
+
 <div class="dlg-bg" id="dlgResetBg">
   <div class="dlg">
     <div class="dlg-top">
@@ -688,6 +702,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- OIL SHEET -->
+
 <div class="sheet-bg" id="oilSheet" style="display:none;">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -707,6 +722,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- SAVE CONFIRM SHEET -->
+
 <div class="sheet-bg" id="saveSheet" style="display:none;">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -727,6 +743,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- HISTORY SHEET -->
+
 <div class="sheet-bg" id="historySheet" style="display:none;">
   <div class="sheet" style="max-height:88vh;">
     <div class="sheet-handle"></div>
@@ -742,7 +759,8 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- ARCHIVE CONFIRM -->
-<div class="dlg-bg" id="dlgBg" style="display:none;">
+
+<div class="dlg-bg" id="dlgBg">
   <div class="dlg">
     <div class="dlg-top"><div class="dlg-ttl">Archive Asset?</div><div class="dlg-msg" id="dlgMsg"></div></div>
     <div class="dlg-btns"><button class="dlg-btn bold" onclick="cancelDlg()">Cancel</button><button class="dlg-btn R" onclick="doArchive()">Archive</button></div>
@@ -750,7 +768,8 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- DELETE CONFIRM -->
-<div class="dlg-bg" id="dlgDelBg" style="display:none;">
+
+<div class="dlg-bg" id="dlgDelBg">
   <div class="dlg">
     <div class="dlg-top">
       <div style="font-size:32px;margin-bottom:8px;">&#128465;&#65039;</div>
@@ -763,6 +782,7 @@ button{touch-action:manipulation;}
 </div>
 
 <!-- SCAN FLASH -->
+
 <div id="scanFlash" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;flex-direction:column;background:rgba(10,34,64,.92);pointer-events:none;">
   <div style="font-size:64px;line-height:1;margin-bottom:10px;color:var(--green2);">&#10003;</div>
   <div id="scanFlashCode" style="font-family:'SF Mono','Courier New',monospace;font-size:24px;font-weight:800;color:#fff;letter-spacing:1.5px;"></div>
@@ -1203,37 +1223,55 @@ function checkDuplicate(asset){
 function hideDupWarn(){var w=document.getElementById('dupWarn');if(w)w.style.display='none';}
 
 // ════ CAMERA / SCANNER ════
+// Hardened Quagga2 wrapper — handles orientation changes, releases tracks, requires
+// multi-frame consensus on Code 128 4x1 reads to suppress misreads.
 function toggleScan(){if(scanning)stopScan();else startScan();}
 var _quaggaRunning=false;
-function startScan(){
-  if(typeof Quagga==='undefined'){
-    showFb('scanFb','err','Scanner library not loaded — try reloading the page');
-    return;
-  }
-  var camWrap=document.getElementById('camWrap');
-  camWrap.classList.add('on');
-  document.getElementById('camHint').textContent='Starting camera…';
+var _scanStream=null;        // MediaStream reference for explicit teardown
+var _orientHandler=null;     // orientationchange/resize listener for re-init
+var _orientTimer=null;       // debounce timer for orientation events
+var _scanVotes={};           // { code: count } — consensus buffer
+var _scanVotesTs=0;          // timestamp of last vote tally
+var _lastAcceptedCode='';    // last code we committed to addScanned()
+var _lastAcceptedTs=0;       // timestamp of last commit
 
-  // Clear any previous Quagga instance
-  try{Quagga.stop();}catch(e){}
-  _quaggaRunning=false;
-
-  Quagga.init({
+function _scannerConfig(){
+  // Build config fresh each (re)init so target/area reflect current orientation.
+  var isLandscape=(window.innerWidth>window.innerHeight);
+  // For 4x1 barcodes the user typically points the long axis along the long axis of the screen.
+  // Portrait: barcode is short-edge-up, scan area is a wide horizontal band.
+  // Landscape: barcode is long-edge horizontal, scan area is also a horizontal band but wider.
+  var area=isLandscape
+    ? {top:'30%',right:'10%',bottom:'30%',left:'10%'}
+    : {top:'35%',right:'8%',bottom:'35%',left:'8%'};
+  return {
     inputStream:{
       name:'Live',
       type:'LiveStream',
       target:document.getElementById('qrDiv'),
       constraints:{
-        facingMode:'environment',
+        facingMode:{ideal:'environment'},
         width:{min:640,ideal:1280,max:1920},
-        height:{min:480,ideal:720,max:1080}
+        height:{min:480,ideal:720,max:1080},
+        // Higher framerate helps lock onto fine 4x1 bar patterns.
+        frameRate:{ideal:30,max:60},
+        // advanced focus hints — accepted on Chrome/Android; ignored elsewhere.
+        advanced:[{focusMode:'continuous'},{focusMode:'auto'}]
       },
-      area:{top:'20%',right:'5%',bottom:'20%',left:'5%'}
+      area:area,
+      // willReadFrequently hint speeds up Quagga's internal canvas reads.
+      willReadFrequently:true,
+      singleChannel:false
     },
-    locator:{patchSize:'medium',halfSample:true},
-    numOfWorkers:0,
-    frequency:10,
+    // 'large' patches outperform 'medium' for 4x1 Code 128 at close range
+    // (thick bars relative to the frame). halfSample stays on for perf.
+    locator:{patchSize:'large',halfSample:true},
+    // Use 2 workers when available — keeps decode off the UI thread.
+    numOfWorkers:(navigator.hardwareConcurrency&&navigator.hardwareConcurrency>2)?2:0,
+    // Throttle to ~15fps decode passes. Higher just heats the phone for no gain.
+    frequency:15,
     decoder:{
+      // Order matters — Code 128 first since that's what FASTER prints.
       readers:[
         'code_128_reader',
         'code_39_reader',
@@ -1243,63 +1281,181 @@ function startScan(){
       multiple:false
     },
     locate:true
-  },function(err){
+  };
+}
+
+function _releaseCameraStream(){
+  // Belt-and-suspenders: Quagga.stop() should release tracks, but on iOS Safari
+  // the indicator sometimes stays on. Walk the qrDiv for any <video> and stop its tracks.
+  try{
+    var qd=document.getElementById('qrDiv');
+    if(qd){
+      var vids=qd.getElementsByTagName('video');
+      for(var i=0;i<vids.length;i++){
+        var v=vids[i],ms=v.srcObject;
+        if(ms&&ms.getTracks){var ts=ms.getTracks();for(var j=0;j<ts.length;j++){try{ts[j].stop();}catch(e){}}}
+        try{v.pause();v.srcObject=null;}catch(e){}
+      }
+    }
+  }catch(e){}
+  if(_scanStream&&_scanStream.getTracks){
+    try{var t2=_scanStream.getTracks();for(var k=0;k<t2.length;k++)t2[k].stop();}catch(e){}
+  }
+  _scanStream=null;
+}
+
+function _attachDetected(){
+  // Re-bind every (re)init. Quagga.offDetected() with no arg removes all listeners.
+  try{Quagga.offDetected();}catch(e){}
+  Quagga.onDetected(_onBarcodeDetected);
+}
+
+function _resetVotes(){_scanVotes={};_scanVotesTs=Date.now();}
+
+function _onBarcodeDetected(result){
+  if(!scanning||!result||!result.codeResult)return;
+  var raw=result.codeResult.code;if(!raw)return;
+  var code=String(raw).trim().toUpperCase();
+  if(code.length<3)return;
+  // Reject results with high decode error if reported (Quagga2 surfaces this on most readers).
+  if(result.codeResult.decodedCodes&&result.codeResult.decodedCodes.length){
+    var errs=0,cnt=0;
+    for(var i=0;i<result.codeResult.decodedCodes.length;i++){
+      var dc=result.codeResult.decodedCodes[i];
+      if(typeof dc.error==='number'){errs+=dc.error;cnt++;}
+    }
+    if(cnt>0){var avgErr=errs/cnt;if(avgErr>0.15)return;}
+  }
+  var now=Date.now();
+  // If last commit was very recent and matches, ignore — prevents duplicate scans.
+  if(code===_lastAcceptedCode&&(now-_lastAcceptedTs)<1500)return;
+  // Reset vote window after 600ms of silence — stops a stale misread from being confirmed later.
+  if(now-_scanVotesTs>600)_resetVotes();
+  _scanVotesTs=now;
+  _scanVotes[code]=(_scanVotes[code]||0)+1;
+  // For Code 128 require 2 identical reads inside the vote window; UPC/EAN with checksums can pass on 1.
+  var fmt=result.codeResult.format||'',needsConsensus=(fmt==='code_128'||fmt==='code_39');
+  if(needsConsensus&&_scanVotes[code]<2)return;
+  if(scanCool)return;
+  scanCool=true;
+  _lastAcceptedCode=code;_lastAcceptedTs=now;
+  _resetVotes();
+  addScanned(code);
+  if(navigator.vibrate){try{navigator.vibrate(80);}catch(e){}}
+  var camWrap2=document.getElementById('camWrap');
+  if(camWrap2)camWrap2.style.outline='3px solid #4cd964';
+  var hintEl=document.getElementById('camHint');
+  if(hintEl)hintEl.textContent='\u2713 Scanned: '+code;
+  setTimeout(function(){
+    if(camWrap2)camWrap2.style.outline='';
+    if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';
+    scanCool=false;
+  },1200);
+}
+
+function _initQuagga(onReady){
+  // Stop any prior instance cleanly before re-init (e.g. orientation flip).
+  try{Quagga.offDetected();}catch(e){}
+  try{if(_quaggaRunning){Quagga.stop();}}catch(e){}
+  _quaggaRunning=false;
+  // Clear qrDiv so Quagga doesn't stack multiple <video> elements on re-init.
+  var qd=document.getElementById('qrDiv');if(qd)qd.innerHTML='';
+  Quagga.init(_scannerConfig(),function(err){
+    if(err){onReady(err);return;}
+    try{Quagga.start();_quaggaRunning=true;}catch(e){onReady(e);return;}
+    // Capture the MediaStream so we can guarantee teardown later.
+    try{
+      var vids=document.getElementById('qrDiv').getElementsByTagName('video');
+      if(vids&&vids[0]&&vids[0].srcObject)_scanStream=vids[0].srcObject;
+    }catch(e){}
+    _attachDetected();
+    onReady(null);
+  });
+}
+
+function _onOrientationChange(){
+  if(!scanning)return;
+  // Debounce — orientationchange fires once but resize can fire many times.
+  if(_orientTimer)clearTimeout(_orientTimer);
+  _orientTimer=setTimeout(function(){
+    if(!scanning)return;
+    var hintEl=document.getElementById('camHint');
+    if(hintEl)hintEl.textContent='Adjusting\u2026';
+    _resetVotes();
+    _releaseCameraStream();
+    _initQuagga(function(err){
+      if(err){
+        if(hintEl)hintEl.textContent='Camera error \u2014 close and reopen scanner';
+        return;
+      }
+      if(hintEl)hintEl.textContent='Hold barcode steady in the frame';
+    });
+  },350);
+}
+
+function startScan(){
+  if(typeof Quagga==='undefined'){
+    showFb('scanFb','err','Scanner library not loaded \u2014 try reloading the page');
+    return;
+  }
+  var camWrap=document.getElementById('camWrap');
+  if(!camWrap)return;
+  camWrap.classList.add('on');
+  camWrap.classList.add('fs'); // fullscreen in both orientations for a stable canvas
+  var hintEl=document.getElementById('camHint');
+  if(hintEl)hintEl.textContent='Starting camera\u2026';
+  _resetVotes();
+  _lastAcceptedCode='';_lastAcceptedTs=0;
+
+  _initQuagga(function(err){
     if(err){
       camWrap.classList.remove('on');
-      var msg=String(err.message||err||'');
-      var hint='Camera unavailable — use manual entry';
-      if(msg.toLowerCase().indexOf('permission')>=0||msg.toLowerCase().indexOf('notallowed')>=0)
-        hint='Camera permission denied — check browser settings';
-      else if(msg.toLowerCase().indexOf('notfound')>=0||msg.toLowerCase().indexOf('no camera')>=0)
+      camWrap.classList.remove('fs');
+      var msg=String((err&&err.message)||err||'');
+      var lower=msg.toLowerCase();
+      var hint='Camera unavailable \u2014 use manual entry';
+      if(lower.indexOf('permission')>=0||lower.indexOf('notallowed')>=0||lower.indexOf('denied')>=0)
+        hint='Camera permission denied \u2014 check browser settings';
+      else if(lower.indexOf('notfound')>=0||lower.indexOf('no camera')>=0||lower.indexOf('devicesnotfound')>=0)
         hint='No camera found on this device';
-      document.getElementById('camHint').textContent=hint;
+      else if(lower.indexOf('overconstrained')>=0||lower.indexOf('constraint')>=0)
+        hint='Camera does not support requested settings \u2014 retry or use manual entry';
+      if(hintEl)hintEl.textContent=hint;
       showFb('scanFb','err',hint);
       return;
     }
-    Quagga.start();
-    _quaggaRunning=true;
     scanning=true;
-    document.getElementById('scanDot').classList.add('live');
+    var sd=document.getElementById('scanDot');if(sd)sd.classList.add('live');
     var _csb=document.getElementById('closeScanBtn');if(_csb)_csb.style.display='block';
-    document.getElementById('camHint').textContent='Hold barcode steady in the frame';
-  });
-
-  // Debounce: only fire once per 1.5s to avoid double-reads
-  var _lastCode='',_lastTs=0;
-  Quagga.offDetected(); // clear any old listener
-  Quagga.onDetected(function(result){
-    if(!result||!result.codeResult)return;
-    var code=(result.codeResult.code||'').trim().toUpperCase();
-    if(!code||code.length<2)return;
-    var now=Date.now();
-    // Require same code twice in a row OR 1.5s gap to prevent jitter reads
-    if(code===_lastCode&&(now-_lastTs)<1500)return;
-    if(code!==_lastCode&&(now-_lastTs)<400){_lastCode=code;_lastTs=now;return;}
-    _lastCode=code;_lastTs=now;
-
-    if(scanCool)return;
-    scanCool=true;
-    addScanned(code);
-    if(navigator.vibrate)navigator.vibrate(80);
-    var camWrap2=document.getElementById('camWrap');
-    if(camWrap2)camWrap2.style.outline='3px solid #4cd964';
-    document.getElementById('camHint').textContent='✓ Scanned: '+code;
-    setTimeout(function(){
-      if(camWrap2)camWrap2.style.outline='';
-      document.getElementById('camHint').textContent='Hold barcode steady in the frame';
-      scanCool=false;
-    },1200);
+    if(hintEl)hintEl.textContent='Hold barcode steady in the frame';
+    // Subscribe to orientation/resize for live re-init.
+    if(!_orientHandler){
+      _orientHandler=_onOrientationChange;
+      window.addEventListener('orientationchange',_orientHandler,false);
+      window.addEventListener('resize',_orientHandler,false);
+    }
   });
 }
+
 function stopScan(){
-  try{if(_quaggaRunning){Quagga.offDetected();Quagga.stop();}}catch(e){}
+  // Detach orientation listeners first so an in-flight rotation doesn't restart us.
+  if(_orientHandler){
+    try{window.removeEventListener('orientationchange',_orientHandler,false);}catch(e){}
+    try{window.removeEventListener('resize',_orientHandler,false);}catch(e){}
+    _orientHandler=null;
+  }
+  if(_orientTimer){clearTimeout(_orientTimer);_orientTimer=null;}
+  try{Quagga.offDetected();}catch(e){}
+  try{if(_quaggaRunning)Quagga.stop();}catch(e){}
   _quaggaRunning=false;
   scanning=false;scanCool=false;
+  _resetVotes();
+  _releaseCameraStream();
   var _csb=document.getElementById('closeScanBtn');if(_csb)_csb.style.display='none';
   var camWrap=document.getElementById('camWrap');
-  if(camWrap){camWrap.classList.remove('on');camWrap.style.outline='';}
-  document.getElementById('scanDot').classList.remove('live');
-  document.getElementById('camHint').textContent='';
+  if(camWrap){camWrap.classList.remove('on');camWrap.classList.remove('fs');camWrap.style.outline='';}
+  var sd=document.getElementById('scanDot');if(sd)sd.classList.remove('live');
+  var hintEl=document.getElementById('camHint');if(hintEl)hintEl.textContent='';
   // Clear the qrDiv so Quagga's video element is removed
   var qd=document.getElementById('qrDiv');if(qd)qd.innerHTML='';
 }
@@ -1599,15 +1755,23 @@ function buildAssetCard(compositeKey,g){
       +'</div>';
   }
   var printBtn='<button data-key="'+esc(sk)+'" data-name="'+esc(sa)+'" onclick="printAsset(this.getAttribute(\'data-key\'),this.getAttribute(\'data-name\'))" style="background:var(--navy2);color:#fff;border:none;border-radius:7px;padding:6px 10px;font-size:13px;cursor:pointer;white-space:nowrap;" title="Print this asset">\ud83d\udda8</button>';
-  var archBtn=curView==='active'
-    ?'<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askArchive(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--red);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Archive</button>'
-    :'<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askDelete(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--gray);color:var(--text2);border:1px solid var(--gray2);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Delete</button>';
+  // Active view: admins see Archive + Delete; non-admins see Archive only.
+  // History view: Delete (admin-only — non-admins shouldn't see it either since the admin tab is gated).
+  var archBtn,delBtnActive='';
+  if(curView==='active'){
+    archBtn='<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askArchive(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--red);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Archive</button>';
+    if(session&&session.isAdmin){
+      delBtnActive='<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askDelete(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--gray);color:var(--text2);border:1px solid var(--gray2);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;" title="Permanently delete (admin)">\ud83d\uddd1\ufe0f</button>';
+    }
+  }else{
+    archBtn='<button data-key="'+esc(sk)+'" data-asset="'+esc(sa)+'" onclick="askDelete(this.getAttribute(\'data-key\'),this.getAttribute(\'data-asset\'))" style="background:var(--gray);color:var(--text2);border:1px solid var(--gray2);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Delete</button>';
+  }
   return '<div class="wo-card">'
     +'<div class="wo-hdr"><div style="flex:1;min-width:0;">'
     +'<div class="wo-num">Asset Log</div>'
     +'<div class="wo-asset" data-key="'+esc(sk)+'" data-name="'+esc(sa)+'" onclick="openAssetHistory(this.getAttribute(\'data-key\'),this.getAttribute(\'data-name\'))">'+esc(g.asset)+'</div>'
     +'<div class="wo-meta">'+esc(dts)+(g.tech?' \u00b7 \ud83d\udc77 '+esc(g.tech)+(g.empId?' ['+esc(g.empId)+']':''):'')+'</div>'
-    +'</div><div style="flex-shrink:0;padding-top:2px;display:flex;gap:6px;">'+printBtn+archBtn+'</div></div>'
+    +'</div><div style="flex-shrink:0;padding-top:2px;display:flex;gap:6px;">'+printBtn+archBtn+delBtnActive+'</div></div>'
     +'<div>'+entries+'</div>'
     +'<div class="wo-foot"><span class="wo-status '+(allPosted?'posted':'pending')+'">'+(allPosted?'\u2713 Posted to FASTER':'\u23f3 Pending')+'</span>'
     +'<span style="font-size:11px;color:var(--text3);">'+pItems.length+' SKU \u00b7 '+tot+' units'+(oilRow?' \u00b7 \ud83d\udee2 '+oilRow.qty+'qts':'')+'</span>'
@@ -1792,7 +1956,14 @@ function askArchive(key,name){archiveKey=key;document.getElementById('dlgMsg').t
 function cancelDlg(){archiveKey=null;document.getElementById('dlgBg').classList.remove('on');}
 function doArchive(){if(!archiveKey)return;var k=archiveKey;cancelDlg();sbPatch('/rest/v1/parts_log?asset_key=eq.'+encodeURIComponent(k)+'&archived=eq.false',{archived:true,posted_to_faster:true,posted_at:new Date().toISOString()},function(ok){if(ok){showToast('Archived \u2713');loadReport();}else showToast('Archive failed');});}
 var deleteKey=null;
-function askDelete(key,name){deleteKey=key;document.getElementById('dlgDelMsg').textContent='Delete all history for "'+name+'" permanently?';document.getElementById('dlgDelBg').classList.add('on');}
+function askDelete(key,name){
+  // Defense in depth: only admins may invoke this dialog. Server policies should also enforce.
+  if(!session||!session.isAdmin){showToast('Admin access required');return;}
+  deleteKey=key;
+  var msgEl=document.getElementById('dlgDelMsg');
+  if(msgEl)msgEl.textContent='Delete all history for "'+name+'" permanently?';
+  document.getElementById('dlgDelBg').classList.add('on');
+}
 function cancelDelDlg(){deleteKey=null;document.getElementById('dlgDelBg').classList.remove('on');}
 function doDelete(){if(!deleteKey)return;var k=deleteKey;cancelDelDlg();sbDelete('/rest/v1/parts_log?asset_key=eq.'+encodeURIComponent(k),function(ok){if(ok){showToast('Deleted \u2713');loadReport();}else showToast('Delete failed');});}
 
