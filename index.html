@@ -231,6 +231,31 @@ button{touch-action:manipulation;}
 .cam-vf-br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:4px;}
 @keyframes scanLine{0%{top:15%}50%{top:85%}100%{top:15%}}
 .cam-vf-scan{position:absolute;left:6px;right:6px;height:2px;background:linear-gradient(90deg,transparent,rgba(201,150,12,.9),rgba(201,150,12,1),rgba(201,150,12,.9),transparent);animation:scanLine 2s ease-in-out infinite;top:50%;box-shadow:0 0 6px rgba(201,150,12,.5);}
+/* SCAN PILL — running count of items scanned this session */
+.scan-pill{position:absolute;top:max(env(safe-area-inset-top,12px),12px);right:12px;z-index:30;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(201,150,12,.45);border-radius:18px;padding:6px 10px 6px 8px;display:flex;align-items:center;gap:8px;cursor:pointer;max-width:min(72vw,360px);transition:max-width .25s ease,padding .2s ease;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+.scan-pill:active{filter:brightness(.85);}
+.scan-pill-count{min-width:24px;height:24px;border-radius:12px;background:var(--gold);color:#000;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 7px;flex-shrink:0;line-height:1;}
+.scan-pill-list{font-family:'SF Mono','Courier New',monospace;font-size:11px;font-weight:700;color:#f0f0f0;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;line-height:1.3;max-height:14px;transition:max-height .25s ease;}
+.scan-pill.expanded{max-width:min(86vw,420px);}
+.scan-pill.expanded .scan-pill-list{white-space:normal;max-height:50vh;overflow-y:auto;line-height:1.5;}
+.scan-pill-chev{color:rgba(255,255,255,.55);flex-shrink:0;transition:transform .2s ease;}
+.scan-pill.expanded .scan-pill-chev{transform:rotate(180deg);}
+.scan-pill-item{display:block;}
+.scan-pill-item-q{color:var(--gold);font-weight:800;margin-left:4px;}
+.scan-pill-empty{font-style:italic;color:rgba(255,255,255,.45);font-weight:500;}
+/* DUPLICATE WARNING — appears below viewfinder; 3s countdown then auto-skips */
+.scan-dup-banner{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px) + 64px);width:min(92vw,460px);background:linear-gradient(135deg,rgba(120,60,0,.96),rgba(80,40,0,.96));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid #ff9500;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;z-index:40;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 4px rgba(255,149,0,.15);animation:dupBannerIn .2s ease-out;}
+@keyframes dupBannerIn{from{opacity:0;transform:translate(-50%,8px);}to{opacity:1;transform:translate(-50%,0);}}
+.scan-dup-icon{font-size:24px;flex-shrink:0;line-height:1;}
+.scan-dup-body{flex:1;min-width:0;}
+.scan-dup-ttl{font-size:13px;font-weight:800;color:#fff;letter-spacing:.2px;}
+.scan-dup-ttl span{font-family:'SF Mono','Courier New',monospace;color:#ffd28a;}
+.scan-dup-sub{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px;font-weight:600;}
+.scan-dup-sub span{font-weight:900;color:#ffd28a;}
+.scan-dup-add{background:#fff;color:#000;border:none;border-radius:18px;padding:8px 14px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;text-transform:uppercase;letter-spacing:.3px;min-height:36px;}
+.scan-dup-add:active{filter:brightness(.85);}
+/* Tighten dup banner placement when fullscreen in landscape — banner sits near bottom */
+@media(orientation:landscape){.cam-wrap.fs .scan-dup-banner{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 60px);width:min(70vw,520px);}}
 .cam-hint{font-size:12px;color:rgba(255,255,255,.5);text-align:center;padding:6px 14px;background:rgba(0,0,0,.5);}
 /* ADMIN TABS */
 .adm-tabs{display:flex;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
@@ -466,7 +491,7 @@ button{touch-action:manipulation;}
     <div class="scroll">
       <div class="workflow-card">
         <div class="scan-btn-full" onclick="toggleScan()"><div class="scan-btn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="4" height="16" rx="1"/><rect x="7" y="4" width="2" height="16" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="1" height="16" rx="1"/><rect x="17" y="4" width="3" height="16" rx="1"/></svg></div><div class="scan-btn-text"><div class="scan-btn-title">Scan FASTER Barcode</div><div class="scan-btn-sub">Tap to open camera</div></div><div id="scanDot" class="scan-dot"></div></div>
-        <div class="cam-wrap" id="camWrap"><div id="qrDiv"></div><div class="cam-viewfinder"><div class="cam-vf-corner cam-vf-tl"></div><div class="cam-vf-corner cam-vf-tr"></div><div class="cam-vf-corner cam-vf-bl"></div><div class="cam-vf-corner cam-vf-br"></div><div class="cam-vf-scan"></div></div><button id="closeScanBtn" onclick="stopScan()" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:12px 32px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;z-index:50;">&#10005;&ensp;Close Scanner</button></div>
+        <div class="cam-wrap" id="camWrap"><div id="qrDiv"></div><div class="cam-viewfinder"><div class="cam-vf-corner cam-vf-tl"></div><div class="cam-vf-corner cam-vf-tr"></div><div class="cam-vf-corner cam-vf-bl"></div><div class="cam-vf-corner cam-vf-br"></div><div class="cam-vf-scan"></div></div><div id="scanPill" class="scan-pill" onclick="toggleScanPillExpanded(event)" style="display:none;"><div class="scan-pill-count"><span id="scanPillCount">0</span></div><div class="scan-pill-list" id="scanPillList"></div><svg class="scan-pill-chev" id="scanPillChev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6,9 12,15 18,9"/></svg></div><div id="scanDupBanner" class="scan-dup-banner" style="display:none;"><div class="scan-dup-icon">&#9888;&#65039;</div><div class="scan-dup-body"><div class="scan-dup-ttl"><span id="scanDupCode"></span> already added</div><div class="scan-dup-sub" id="scanDupSub">Currently qty 1 \u00b7 skipping in <span id="scanDupCountdown">3</span>s</div></div><button class="scan-dup-add" onclick="confirmDupAdd()">Add Anyway</button></div><button id="closeScanBtn" onclick="stopScan()" style="display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:12px 32px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;z-index:50;">&#10005;&ensp;Close Scanner</button></div>
         <div class="cam-hint" id="camHint"></div>
         <div class="or-divider"><div class="or-divider-line"></div><div class="or-divider-txt">OR</div><div class="or-divider-line"></div></div>
         <div class="manual-section"><div class="manual-label">Enter Part Number</div><input type="text" id="manCode" autocomplete="off" autocapitalize="characters" placeholder="Part number or description..." oninput="onManCodeInput(this.value)" onkeydown="onManCodeKey(event)" onfocus="this.style.borderColor='rgba(201,150,12,.6)';onManCodeInput(this.value);" onblur="setTimeout(hideAutocomplete,150);this.style.borderColor='rgba(255,255,255,.1)';" style="width:100%;font-family:'SF Mono',monospace;font-size:16px;font-weight:600;color:#f0f0f0;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;outline:none;-webkit-appearance:none;letter-spacing:.5px;margin-bottom:10px;display:block;transition:border-color .2s;box-sizing:border-box;"><div class="autocomplete-list" id="autocompleteList"></div><div style="display:flex;gap:10px;align-items:center;"><div class="qty-stepper"><button onclick="stepVal('manQty',-1)">&#8722;</button><input id="manQty" type="number" value="1" min="1" style="width:40px;border:none;outline:none;font-family:inherit;font-size:17px;font-weight:800;color:#fff;background:transparent;text-align:center;-webkit-appearance:none;padding:0;"><button onclick="stepVal('manQty',1)">+</button></div><button onclick="addManual()" class="add-part-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>ADD PART</button></div></div>
@@ -1337,10 +1362,33 @@ function _onBarcodeDetected(result){
   var fmt=result.codeResult.format||'',needsConsensus=(fmt==='code_128'||fmt==='code_39');
   if(needsConsensus&&_scanVotes[code]<2)return;
   if(scanCool)return;
+  // If a duplicate confirmation is already pending for this same code, ignore.
+  if(_pendingDupCode&&normalizePartCode(code)===_pendingDupCode)return;
+  // If a duplicate confirmation is pending for a DIFFERENT code, cancel it
+  // (user moved on — implicit skip of the prior dup).
+  if(_pendingDupCode&&normalizePartCode(code)!==_pendingDupCode){_clearDupBanner(true);}
   scanCool=true;
   _lastAcceptedCode=code;_lastAcceptedTs=now;
   _resetVotes();
+  // Duplicate check: compare normalized code against current parts list.
+  var nCode=normalizePartCode(code),dupIdx=findPart(nCode);
+  if(dupIdx>=0){
+    // Already added — surface the warning banner with a 3s auto-skip countdown.
+    _showDupBanner(nCode,parts[dupIdx].qty);
+    if(navigator.vibrate){try{navigator.vibrate([40,40,40]);}catch(e){}}
+    var camWrapD=document.getElementById('camWrap');
+    if(camWrapD)camWrapD.style.outline='3px solid #ff9500';
+    var hintElD=document.getElementById('camHint');
+    if(hintElD)hintElD.textContent='\u26a0\ufe0f Already added';
+    setTimeout(function(){
+      if(camWrapD)camWrapD.style.outline='';
+      if(hintElD&&scanning&&!_pendingDupCode)hintElD.textContent='Hold barcode steady in the frame';
+      scanCool=false;
+    },1200);
+    return;
+  }
   addScanned(code);
+  updateScanPill();
   if(navigator.vibrate){try{navigator.vibrate(80);}catch(e){}}
   var camWrap2=document.getElementById('camWrap');
   if(camWrap2)camWrap2.style.outline='3px solid #4cd964';
@@ -1351,6 +1399,98 @@ function _onBarcodeDetected(result){
     if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';
     scanCool=false;
   },1200);
+}
+
+// ──── Duplicate-scan confirmation banner ────
+var _pendingDupCode=null;        // normalized code currently warned about (null = none)
+var _dupBannerTimeout=null;      // master timer for the 3s auto-skip
+var _dupBannerInterval=null;     // 1s tick for countdown display
+function _showDupBanner(nCode,curQty){
+  _clearDupBanner(false); // cancel any prior banner without re-enabling scan
+  _pendingDupCode=nCode;
+  var banner=document.getElementById('scanDupBanner');
+  var codeEl=document.getElementById('scanDupCode');
+  var subEl=document.getElementById('scanDupSub');
+  var cdEl=document.getElementById('scanDupCountdown');
+  if(!banner||!codeEl||!subEl||!cdEl){_pendingDupCode=null;return;}
+  codeEl.textContent=nCode;
+  var remaining=3;
+  cdEl.textContent=remaining;
+  subEl.innerHTML='Currently qty '+curQty+' \u00b7 skipping in <span id="scanDupCountdown">'+remaining+'</span>s';
+  banner.style.display='flex';
+  _dupBannerInterval=setInterval(function(){
+    remaining--;
+    var c=document.getElementById('scanDupCountdown');
+    if(c)c.textContent=Math.max(remaining,0);
+    if(remaining<=0&&_dupBannerInterval){clearInterval(_dupBannerInterval);_dupBannerInterval=null;}
+  },1000);
+  _dupBannerTimeout=setTimeout(function(){
+    // 3s elapsed with no tap: skip (do nothing — the part was NOT added).
+    _clearDupBanner(true);
+    var hintEl=document.getElementById('camHint');
+    if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';
+  },3000);
+}
+function _clearDupBanner(unlock){
+  if(_dupBannerTimeout){clearTimeout(_dupBannerTimeout);_dupBannerTimeout=null;}
+  if(_dupBannerInterval){clearInterval(_dupBannerInterval);_dupBannerInterval=null;}
+  _pendingDupCode=null;
+  var banner=document.getElementById('scanDupBanner');
+  if(banner)banner.style.display='none';
+  if(unlock)scanCool=false;
+}
+function confirmDupAdd(){
+  // User tapped "Add Anyway" — commit the increment via addScanned (which bumps qty).
+  if(!_pendingDupCode)return;
+  var code=_pendingDupCode;
+  _clearDupBanner(true);
+  addScanned(code);
+  updateScanPill();
+  if(navigator.vibrate){try{navigator.vibrate(60);}catch(e){}}
+  var hintEl=document.getElementById('camHint');
+  if(hintEl&&scanning)hintEl.textContent='\u2713 Added: '+code;
+  setTimeout(function(){if(hintEl&&scanning)hintEl.textContent='Hold barcode steady in the frame';},1200);
+}
+
+// ──── Viewfinder pill: running count + last 2-3 codes (tap to expand) ────
+function updateScanPill(){
+  var pill=document.getElementById('scanPill');
+  var countEl=document.getElementById('scanPillCount');
+  var listEl=document.getElementById('scanPillList');
+  if(!pill||!countEl||!listEl)return;
+  // Only meaningful while scanning.
+  if(!scanning){pill.style.display='none';return;}
+  pill.style.display='flex';
+  var n=(parts&&parts.length)||0;
+  countEl.textContent=n;
+  if(n===0){
+    listEl.innerHTML='<span class="scan-pill-empty">No items yet</span>';
+    pill.classList.remove('expanded');
+    return;
+  }
+  var expanded=pill.classList.contains('expanded');
+  if(expanded){
+    // Full list (newest first), max 50 rows for safety.
+    var html='',start=Math.max(0,parts.length-50);
+    for(var i=parts.length-1;i>=start;i--){
+      html+='<span class="scan-pill-item">'+esc(parts[i].code)+(parts[i].qty>1?'<span class="scan-pill-item-q">\u00d7'+parts[i].qty+'</span>':'')+'</span>';
+    }
+    listEl.innerHTML=html;
+  }else{
+    // Collapsed: show last 2-3 codes, newest first, joined with thin dots.
+    var take=Math.min(3,parts.length),items=[];
+    for(var j=parts.length-1;j>=parts.length-take;j--){
+      items.push(esc(parts[j].code)+(parts[j].qty>1?'<span class="scan-pill-item-q">\u00d7'+parts[j].qty+'</span>':''));
+    }
+    listEl.innerHTML=items.join('<span style="opacity:.4;margin:0 5px;">\u00b7</span>');
+  }
+}
+function toggleScanPillExpanded(ev){
+  if(ev){ev.stopPropagation();}
+  var pill=document.getElementById('scanPill');
+  if(!pill)return;
+  pill.classList.toggle('expanded');
+  updateScanPill();
 }
 
 function _initQuagga(onReady){
@@ -1389,6 +1529,7 @@ function _onOrientationChange(){
         return;
       }
       if(hintEl)hintEl.textContent='Hold barcode steady in the frame';
+      updateScanPill();
     });
   },350);
 }
@@ -1428,6 +1569,7 @@ function startScan(){
     var sd=document.getElementById('scanDot');if(sd)sd.classList.add('live');
     var _csb=document.getElementById('closeScanBtn');if(_csb)_csb.style.display='block';
     if(hintEl)hintEl.textContent='Hold barcode steady in the frame';
+    updateScanPill();
     // Subscribe to orientation/resize for live re-init.
     if(!_orientHandler){
       _orientHandler=_onOrientationChange;
@@ -1445,6 +1587,7 @@ function stopScan(){
     _orientHandler=null;
   }
   if(_orientTimer){clearTimeout(_orientTimer);_orientTimer=null;}
+  _clearDupBanner(false);
   try{Quagga.offDetected();}catch(e){}
   try{if(_quaggaRunning)Quagga.stop();}catch(e){}
   _quaggaRunning=false;
@@ -1458,6 +1601,8 @@ function stopScan(){
   var hintEl=document.getElementById('camHint');if(hintEl)hintEl.textContent='';
   // Clear the qrDiv so Quagga's video element is removed
   var qd=document.getElementById('qrDiv');if(qd)qd.innerHTML='';
+  var pill=document.getElementById('scanPill');
+  if(pill){pill.style.display='none';pill.classList.remove('expanded');}
 }
 
 // ════ ADD PARTS ════
@@ -1560,6 +1705,8 @@ function renderParts(){
     h+='<tr><td colspan="4" style="padding:8px 14px;background:rgba(201,168,76,.06);border-top:1px dashed rgba(201,168,76,.3);">'      +'<span style="font-size:11px;color:var(--gold);font-weight:600;">&#9734; Tap the star on any part to save it as a Quick Favorite</span>'      +'</td></tr>';
   }
   h+='</tbody></table>';list.innerHTML=h;attachSwipeDelete();
+  // Keep the in-viewfinder pill in sync with any parts mutation (add, delete, qty change).
+  if(typeof updateScanPill==='function')updateScanPill();
 }
 function chQ(i,d){if(i<0||i>=parts.length)return;parts[i].qty=Math.max(1,parts[i].qty+d);renderParts();step3Check();}
 function delP(i){if(i<0||i>=parts.length)return;parts.splice(i,1);renderParts();step3Check();}
