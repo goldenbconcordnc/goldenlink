@@ -183,6 +183,48 @@ html[data-theme="light"] [style*="background:#040406"]{background:var(--app-bg)!
 /* Smooth theme transition on common surfaces */
 html[data-theme="light"] .page,html[data-theme="light"] .card,html[data-theme="light"] .wo-card,html[data-theme="light"] .nav,html[data-theme="light"] .tabbar,html[data-theme="light"] .dlg,html[data-theme="light"] .sheet{transition:background-color .2s ease,color .2s ease,border-color .2s ease;}
 /* ─── End light-mode overrides ─── */
+/* ─── LIGHT MODE: targeted fixes for elements with CSS-rule color literals (not inline) ─── */
+/* User badge in top nav — "Bryce Golden 3726" + "sign out" */
+html[data-theme="light"] #techBadgeName{color:#1a1a1a!important;}
+html[data-theme="light"] .tech-badge-btn{color:rgba(0,0,0,.55)!important;}
+/* The pill wrapping the user badge — give it a real background in light mode */
+html[data-theme="light"] .nav-right [style*="background:rgba(255,255,255,.06)"][style*="border-radius:22px"]{background:rgba(0,0,0,.05)!important;border-color:rgba(0,0,0,.1)!important;}
+html[data-theme="light"] .nav-right [style*="background:rgba(255,255,255,.06)"][style*="border-radius:20px"]{background:rgba(0,0,0,.05)!important;border-color:rgba(0,0,0,.1)!important;}
+html[data-theme="light"] .nav-right [style*="color:rgba(255,255,255,.8)"]{color:rgba(0,0,0,.7)!important;}
+/* My Report — YOUR ACTIVITY stats card */
+html[data-theme="light"] .stats-card{background:#ffffff!important;border-color:rgba(168,120,0,.22)!important;}
+html[data-theme="light"] .stats-box{background:rgba(0,0,0,.02)!important;}
+html[data-theme="light"] .stats-row,html[data-theme="light"] .stats-rank{border-top-color:rgba(0,0,0,.06)!important;}
+html[data-theme="light"] .stats-box:not(:last-child){border-right-color:rgba(0,0,0,.06)!important;}
+html[data-theme="light"] .stats-lbl{color:rgba(0,0,0,.55)!important;}
+html[data-theme="light"] .stats-rank-lbl{color:rgba(0,0,0,.55)!important;}
+/* Leaderboard rows */
+html[data-theme="light"] .lb-card{background:#ffffff!important;border-color:rgba(168,120,0,.22)!important;}
+html[data-theme="light"] .lb-hdr{background:linear-gradient(135deg,#fcfaf4,#f3eee0)!important;border-bottom-color:rgba(201,150,12,.18)!important;}
+html[data-theme="light"] .lb-row{border-bottom-color:rgba(0,0,0,.06)!important;}
+html[data-theme="light"] .lb-name{color:#1a1a1a!important;}
+html[data-theme="light"] .lb-name.me{color:var(--gold)!important;}
+html[data-theme="light"] .lb-rank{color:rgba(0,0,0,.45)!important;}
+html[data-theme="light"] .lb-rank.me{color:var(--gold)!important;}
+html[data-theme="light"] .lb-count{color:var(--gold)!important;}
+html[data-theme="light"] .lb-bar-wrap{background:rgba(0,0,0,.06)!important;}
+/* Save Parts button — idle/disabled state was invisible on light bg */
+html[data-theme="light"] #saveBtnFixed{background:rgba(0,0,0,.05)!important;color:rgba(0,0,0,.4)!important;border-color:rgba(0,0,0,.1)!important;}
+html[data-theme="light"] #saveBtnFixed.ready{background:linear-gradient(135deg,#a87800,#c9960c)!important;color:#000!important;border-color:transparent!important;box-shadow:0 0 24px rgba(201,150,12,.35)!important;}
+html[data-theme="light"] #saveBtnFixed.ready:active{filter:brightness(.92)!important;}
+/* Loading dots / spinner caption */
+html[data-theme="light"] .loading{color:rgba(0,0,0,.45)!important;}
+/* Empty-state icon (clipboard) — keep its intentional opacity */
+html[data-theme="light"] .empty-ico{filter:grayscale(.2) brightness(.85)!important;}
+/* PARTS ADDED section divider line (the small gold accent next to the label) */
+html[data-theme="light"] .sec::before{box-shadow:0 0 6px rgba(201,150,12,.25)!important;}
+/* nav-right inner pill (Bryce Golden badge background) catch-all by hierarchy */
+html[data-theme="light"] .nav-right>div[style*="background:rgba(255,255,255"]{background:rgba(0,0,0,.05)!important;border-color:rgba(0,0,0,.1)!important;}
+/* "This month" subtitle on leaderboard header */
+html[data-theme="light"] .lb-hdr [style*="color:rgba(255,255,255,.45)"]{color:rgba(0,0,0,.5)!important;}
+/* "V3" badge in nav next to logo */
+html[data-theme="light"] .nav-logo [style*="background:rgba(201,150,12"]{background:rgba(201,150,12,.18)!important;color:#000!important;}
+/* End light-mode v2 fixes */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;background:var(--app-bg);color:var(--text);overscroll-behavior:none;transition:background-color .2s ease,color .2s ease;}
 input,textarea,select,button{font-family:inherit;}
