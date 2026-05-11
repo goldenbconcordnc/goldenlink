@@ -225,6 +225,42 @@ html[data-theme="light"] .lb-hdr [style*="color:rgba(255,255,255,.45)"]{color:rg
 /* "V3" badge in nav next to logo */
 html[data-theme="light"] .nav-logo [style*="background:rgba(201,150,12"]{background:rgba(201,150,12,.18)!important;color:#000!important;}
 /* End light-mode v2 fixes */
+/* ─── LIGHT MODE v3 fixes — login, star buttons, tab SVG icons ─── */
+/* TAB SVG ICONS — hard-coded white strokes need dark strokes in light mode */
+html[data-theme="light"] .tab-svg,
+html[data-theme="light"] .tab-svg-wrap svg{stroke:rgba(0,0,0,.45)!important;}
+html[data-theme="light"] .tab.on .tab-svg,
+html[data-theme="light"] .tab.on .tab-svg-wrap svg{stroke:var(--gold)!important;}
+/* STAR button in Parts Added — invisible white opacity on white card */
+html[data-theme="light"] .star-btn{color:rgba(0,0,0,.35)!important;}
+html[data-theme="light"] .star-btn.starred{color:var(--gold)!important;text-shadow:0 0 8px rgba(201,150,12,.5)!important;}
+/* LOGIN PAGE — full overhaul for light mode */
+html[data-theme="light"] .login-wrap{background-color:var(--app-bg)!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='4' height='4' fill='rgba(0,0,0,0.025)'/%3E%3Crect x='4' y='4' width='4' height='4' fill='rgba(0,0,0,0.025)'/%3E%3C/svg%3E"),linear-gradient(180deg,#f7f5f0 0%,#ece6d9 100%)!important;}
+html[data-theme="light"] .login-logo{color:#1a1a1a!important;}
+html[data-theme="light"] .login-tagline{color:rgba(0,0,0,.5)!important;}
+html[data-theme="light"] .login-card{background:#ffffff!important;box-shadow:0 8px 40px rgba(0,0,0,.15),0 0 0 1px rgba(201,150,12,.15)!important;}
+html[data-theme="light"] .login-body{background:#ffffff!important;}
+html[data-theme="light"] .login-lbl{color:rgba(0,0,0,.55)!important;}
+html[data-theme="light"] .login-inp{background:#f4f1ea!important;border-color:rgba(0,0,0,.12)!important;color:#1a1a1a!important;}
+html[data-theme="light"] .login-inp::placeholder{color:rgba(0,0,0,.35)!important;}
+html[data-theme="light"] .login-inp:focus{border-color:rgba(201,150,12,.55)!important;}
+html[data-theme="light"] #loginFormWrap>div[style*="background:var(--offwhite)"]{background:#f7f4ec!important;border-color:rgba(0,0,0,.1)!important;}
+html[data-theme="light"] #loginFormWrap .login-field{border-bottom-color:rgba(0,0,0,.07)!important;}
+/* Keep me logged in — checkbox + text */
+html[data-theme="light"] #rememberBox{border-color:rgba(0,0,0,.35)!important;background:transparent!important;}
+html[data-theme="light"] #rememberBox.checked,html[data-theme="light"] #rememberBox[style*="background:var(--red)"]{background:var(--red)!important;border-color:var(--red)!important;}
+html[data-theme="light"] #loginFormWrap span[style*="color:rgba(255,255,255,.8)"]{color:#1a1a1a!important;}
+html[data-theme="light"] #loginAttemptTxt{color:rgba(0,0,0,.5)!important;}
+html[data-theme="light"] #loginFormWrap div[style*="color:rgba(255,255,255,.25)"],
+html[data-theme="light"] #loginFormWrap div[style*="color:rgba(255,255,255,.35)"]{color:rgba(0,0,0,.5)!important;}
+/* "GOLDENLINK FLEET" footer star line */
+html[data-theme="light"] #loginPage>div[style*="color:rgba(255,255,255,.2)"]{color:rgba(0,0,0,.4)!important;}
+/* Login button — keep red but soften shadow for light bg */
+html[data-theme="light"] .login-btn{box-shadow:0 4px 20px rgba(184,0,15,.25)!important;}
+/* "Contact your administrator" hint - already in dark band, force it light */
+html[data-theme="light"] .login-cb-txt{color:rgba(0,0,0,.7)!important;}
+html[data-theme="light"] .login-cb{border-color:rgba(0,0,0,.35)!important;}
+/* End light-mode v3 fixes */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;background:var(--app-bg);color:var(--text);overscroll-behavior:none;transition:background-color .2s ease,color .2s ease;}
 input,textarea,select,button{font-family:inherit;}
